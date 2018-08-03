@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"xyz.davidchangx.algorithms.equation","h":"","u":""},{"l":"xyz.davidchangx.algorithms.math","h":"","u":""},{"l":"xyz.davidchangx.algorithms.math.operator","h":"","u":""},{"l":"xyz.davidchangx.mathtool","h":"","u":""}]

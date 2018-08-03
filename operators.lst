@@ -1,0 +1,55 @@
+lg(	xyz.davidchangx.algorithms.math.operator.Lg	basic	;15,1,1
+ln(	xyz.davidchangx.algorithms.math.operator.Ln	basic	;15,1,1
+e^(	xyz.davidchangx.algorithms.math.operator.Exponential	basic	;15,1,1
++	xyz.davidchangx.algorithms.math.operator.Plus	basic	;5,5,2
+-	xyz.davidchangx.algorithms.math.operator.Minus	basic	;5,5,2
+mod	xyz.davidchangx.algorithms.math.operator.Modulo	basic	;6,6,2
+*	xyz.davidchangx.algorithms.math.operator.Multiply	basic	;8,8,2
+/	xyz.davidchangx.algorithms.math.operator.Divide	basic	;8,8,2
+^	xyz.davidchangx.algorithms.math.operator.Power	basic	;10,9,2
+(	xyz.davidchangx.algorithms.math.operator.LeftBracket	basic	;15,1,1
+)	xyz.davidchangx.algorithms.math.operator.RightBracket	basic	;0,0,1
+pi	xyz.davidchangx.algorithms.math.operator.Pi	basic	;15,15,0
+|(	xyz.davidchangx.algorithms.math.operator.AbsoluteLeft	basic	;15,1,1
+)|	xyz.davidchangx.algorithms.math.operator.AbsoluteRight	basic	;0,0,1
+-(	xyz.davidchangx.algorithms.math.operator.Negate	basic	;15,1,1
+,	xyz.davidchangx.algorithms.math.operator.Comma	basic	;15,15,1
+; Group "basic" contains common basic math operators. 
+
+cos(	xyz.davidchangx.algorithms.math.operator.Cosine	trigonometric	;15,1,1
+sin(	xyz.davidchangx.algorithms.math.operator.Sine	trigonometric	;15,1,1
+tan(	xyz.davidchangx.algorithms.math.operator.Tangent	trigonometric	;15,1,1
+; Group "trigonometric contains trigonometric functions. 
+
+arccos(	xyz.davidchangx.algorithms.math.operator.ArcCosine	inverse_trigonometric	;15,1,1
+arcsin(	xyz.davidchangx.algorithms.math.operator.ArcSine	inverse_trigonometric	;15,1,1
+arctan(	xyz.davidchangx.algorithms.math.operator.ArcTangent	inverse_trigonometric	;15,1,1
+; Group "inverse_trigonometric" contains inverse trigonometric functions. 
+
+cosh(	xyz.davidchangx.algorithms.math.operator.HyperbolicCosine	hyperbolic	;15,1,1
+sinh(	xyz.davidchangx.algorithms.math.operator.HyperbolicSine	hyperbolic	;15,1,1
+tanh(	xyz.davidchangx.algorithms.math.operator.HyperbolicTangent	hyperbolic	;15,1,1
+; Group "hyperbolic" contains hyperbolic trigonometric functions. 
+
+relu(	xyz.davidchangx.algorithms.math.operator.PositiveOrZero	singular	;15,1,1
+Sa(	xyz.davidchangx.algorithms.math.operator.Sample	singular	;15,1,1
+sgn(	xyz.davidchangx.algorithms.math.operator.Signature	singular	;15,1,1
+u(	xyz.davidchangx.algorithms.math.operator.StepFunction	singular	;15,1,1
+sum_delta(	xyz.davidchangx.algorithms.math.operator.Discretization	singular	;15,1,2
+delta(	xyz.davidchangx.algorithms.math.operator.DirichletFunction	singular	;15,1,1
+; Group "singular" contains unusual singular functions. 
+
+&	xyz.davidchangx.algorithms.math.operator.And	logical	;4,4,2
+|	xyz.davidchangx.algorithms.math.operator.Or	logical	;3,3,2
+~	xyz.davidchangx.algorithms.math.operator.Not	logical	;15,1,1
+(+)	xyz.davidchangx.algorithms.math.operator.Xor	logical	;3,3,2
+[	xyz.davidchangx.algorithms.math.operator.IversonLeft	logical	;15,1,1
+]	xyz.davidchangx.algorithms.math.operator.IversonRight	logical	;0,0,1
+delta[	xyz.davidchangx.algorithms.math.operator.KroneckFunction	logical	;15,1,2
+>	xyz.davidchangx.algorithms.math.operator.Greater	logical	;2,2,2
+>=	xyz.davidchangx.algorithms.math.operator.GreaterThanOrEquals	logical	;2,2,2
+<	xyz.davidchangx.algorithms.math.operator.Less	logical	;2,2,2
+<=	xyz.davidchangx.algorithms.math.operator.LessThanOrEquals	logical	;2,2,2
+=	xyz.davidchangx.algorithms.math.operator.Equals	logical	;2,2,2
+!=	xyz.davidchangx.algorithms.math.operator.NotEquals	logical	;2,2,2
+; Group "logical" contains several logical operators. 
