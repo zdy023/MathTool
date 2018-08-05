@@ -98,6 +98,16 @@ To use `OperatorMapGenerator` you need to provide an operator list in such a for
 
 You can refer to `operators.lst` for a strict normative example of operator list. I suggest that you have a look at this file help you to deal with class `Expression` and class `OperatorMapGenerator` better. 
 
+## Customized Operator Suggetions
+
+1. You need to set the in-stack priority, out-stack priority, operand count and group mode for your operator. 
+2. For single binary operator obeying associative laws like "+" (plus), the in-stack and out-stack priorities may be equivalent. 
+3. For single binary operator not obeying associative laws but obeying left associative law like "-" (minus), the in-stack priority should be less than or equivalent to out-stack priority. 
+4. For single binary operator not obeying associative laws but obeying right associative law like "^" (power), the in-stack priority should be greater than out-stack priority. 
+5. For operator with group mode `OperatorGroupMode.NEEDING_CLOSED` like "sin(", you should ensure its in-stack priority is almost the greatest (like 15) and its out-stack priority is the least (like 1 or 0). 
+6. The operand count of an operator needing no operands and returning nothing like "," (comma) should be set to 1. 
+7. For pseudo operator like "pi" to offer a science constant, you could set both its in-stack priority and out-stack priority to the greatest (like 15) and its operand count to 0. 
+
 
 For a more detailed documation of the API, please refer to `docs/index.html`. To get this documation, execute
 
