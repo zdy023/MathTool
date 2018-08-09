@@ -53,3 +53,6 @@ delta[	xyz.davidchangx.algorithms.math.operator.KroneckFunction	logical	;15,1,2
 =	xyz.davidchangx.algorithms.math.operator.Equals	logical	;2,2,2
 !=	xyz.davidchangx.algorithms.math.operator.NotEquals	logical	;2,2,2
 ; Group "logical" contains several logical operators. 
+
+gcd(	xyz.davidchangx.algorithms.math.operator.GCD	integer_theory	;15,1,2
+lcm(	xyz.davidchangx.algorithms.math.operator.LCM	integer_theory	;15,1,2

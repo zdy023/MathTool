@@ -35,7 +35,7 @@ public class OperatorMapGenerator
 	 * @throws ClassNotFoundException if one operator class file wasn't found
 	 * @throws NoSuchMethodException if the proper construction method wasn't found
 	 * @throws InstantiationException if one operator object cannot be instantiated correctly
-	 * @throws IllegalAccessException if `{@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
+	 * @throws IllegalAccessException if {@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
 	 * @throws InvocationTargetException
 	 * @throws FileNotFoundException if the given operator list file wasn't found
 	 */
@@ -65,7 +65,7 @@ public class OperatorMapGenerator
 	 * @throws ClassNotFoundException if one operator class file wasn't found
 	 * @throws NoSuchMethodException if the proper construction method wasn't found
 	 * @throws InstantiationException if one operator object cannot be instantiated correctly
-	 * @throws IllegalAccessException if `{@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
+	 * @throws IllegalAccessException if {@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
 	 * @throws InvocationTargetException
 	 * @throws FileNotFoundException if the given operator list file wasn't found
 	 */
@@ -101,7 +101,7 @@ public class OperatorMapGenerator
 	 * @throws ClassNotFoundException if one operator class file wasn't found
 	 * @throws NoSuchMethodException if the proper construction method wasn't found
 	 * @throws InstantiationException if one operator object cannot be instantiated correctly
-	 * @throws IllegalAccessException if `{@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
+	 * @throws IllegalAccessException if {@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
 	 * @throws InvocationTargetException
 	 * @throws FileNotFoundException if the given operator list file wasn't found
 	 */
@@ -116,7 +116,7 @@ public class OperatorMapGenerator
 	 * @throws ClassNotFoundException if one operator class file wasn't found
 	 * @throws NoSuchMethodException if the proper construction method wasn't found
 	 * @throws InstantiationException if one operator object cannot be instantiated correctly
-	 * @throws IllegalAccessException if `{@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
+	 * @throws IllegalAccessException if {@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
 	 * @throws InvocationTargetException
 	 * @throws FileNotFoundException if the given operator list file wasn't found
 	 */
@@ -131,7 +131,7 @@ public class OperatorMapGenerator
 	 * @throws ClassNotFoundException if one operator class file wasn't found
 	 * @throws NoSuchMethodException if the proper construction method wasn't found
 	 * @throws InstantiationException if one operator object cannot be instantiated correctly
-	 * @throws IllegalAccessException if `{@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
+	 * @throws IllegalAccessException if {@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
 	 * @throws InvocationTargetException
 	 * @throws FileNotFoundException if the given operator list file wasn't found
 	 */
@@ -146,7 +146,7 @@ public class OperatorMapGenerator
 	 * @throws ClassNotFoundException if one operator class file wasn't found
 	 * @throws NoSuchMethodException if the proper construction method wasn't found
 	 * @throws InstantiationException if one operator object cannot be instantiated correctly
-	 * @throws IllegalAccessException if `{@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
+	 * @throws IllegalAccessException if {@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
 	 * @throws InvocationTargetException
 	 * @throws FileNotFoundException if the given operator list file wasn't found
 	 */
@@ -162,7 +162,7 @@ public class OperatorMapGenerator
 	 * @throws ClassNotFoundException if one operator class file wasn't found
 	 * @throws NoSuchMethodException if the proper construction method wasn't found
 	 * @throws InstantiationException if one operator object cannot be instantiated correctly
-	 * @throws IllegalAccessException if `{@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
+	 * @throws IllegalAccessException if {@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
 	 * @throws InvocationTargetException
 	 * @throws FileNotFoundException if the given operator list file wasn't found
 	 */
@@ -177,12 +177,27 @@ public class OperatorMapGenerator
 	 * @throws ClassNotFoundException if one operator class file wasn't found
 	 * @throws NoSuchMethodException if the proper construction method wasn't found
 	 * @throws InstantiationException if one operator object cannot be instantiated correctly
-	 * @throws IllegalAccessException if `{@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
+	 * @throws IllegalAccessException if {@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
 	 * @throws InvocationTargetException
 	 * @throws FileNotFoundException if the given operator list file wasn't found
 	 */
 	public static HashMap<String,Operator> getLogicalOperatorMap(File operatorList) throws ClassNotFoundException,NoSuchMethodException,InstantiationException,IllegalAccessException,InvocationTargetException,FileNotFoundException
 	{
 		return getOperatorMapByGroupPattern(operatorList,"logical");
+	}
+	/**
+	 * Generates an operator map containing the operators belonging to the group "integer_theory".
+	 *
+	 * @param operatorList the operator list
+	 * @throws ClassNotFoundException if one operator class file wasn't found
+	 * @throws NoSuchMethodException if the proper construction method wasn't found
+	 * @throws InstantiationException if one operator object cannot be instantiated correctly
+	 * @throws IllegalAccessException if {@code OperatorMapGenerator} doesn't have the privilege to access an operator class or its construction method. 
+	 * @throws InvocationTargetException
+	 * @throws FileNotFoundException if the given operator list file wasn't found
+	 */
+	public static HashMap<String,Operator> getIntegerTheoryOperatorMap(File operatorList) throws ClassNotFoundException,NoSuchMethodException,InstantiationException,IllegalAccessException,InvocationTargetException,FileNotFoundException
+	{
+		return getOperatorMapByGroupPattern(operatorList,"integer_theory");
 	}
 }

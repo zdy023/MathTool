@@ -32,7 +32,7 @@ operatortool: $(mathtool_opt)/OperatorMapGenerator.class
 
 .PHONY: basic trigonometric inverse_trigonometric hyperbolic singular logical all_operators
 operator: $(operator_opt)/Operator.class $(mathtool_opt)/OperatorMapGenerator.class all_operators
-all_operators: basic trigonometric inverse_trigonometric hyperbolic singular logical
+all_operators: basic trigonometric inverse_trigonometric hyperbolic singular logical integer_theory
 
 basic_ops = Lg Ln Exponential Plus Minus Modulo Multiply Divide Power LeftBracket RightBracket Pi AbsoluteLeft AbsoluteRight Negate Comma
 trigonometric_ops = Cosine Sine Tangent
@@ -40,6 +40,7 @@ inverse_trigonometric_ops = ArcCosine ArcSine ArcTangent
 hyperbolic_ops = HyperbolicCosine HyperbolicSine HyperbolicTangent
 singular_ops = PositiveOrZero Sample Signature StepFunction Discretization DirichletFunction
 logical_ops = And Or Not Xor IversonLeft IversonRight KroneckFunction Greater GreaterThanOrEquals Less LessThanOrEquals Equals NotEquals
+integer_theory_ops = GCD LCM
 
 basic: $(operator_opt)/Operator.class $(addprefix $(operator_opt)/,$(addsuffix .class,$(basic_ops)))
 trigonometric: $(operator_opt)/Operator.class $(addprefix $(operator_opt)/,$(addsuffix .class,$(trigonometric_ops)))
@@ -47,6 +48,7 @@ inverse_trigonometric: $(operator_opt)/Operator.class $(addprefix $(operator_opt
 hyperbolic: $(operator_opt)/Operator.class $(addprefix $(operator_opt)/,$(addsuffix .class,$(hyperbolic_ops)))
 singular: $(operator_opt)/Operator.class $(addprefix $(operator_opt)/,$(addsuffix .class,$(singular_ops)))
 logical: $(operator_opt)/Operator.class $(addprefix $(operator_opt)/,$(addsuffix .class,$(logical_ops)))
+integer_theory: $(operator_opt)/Operator.class $(addprefix $(operator_opt)/,$(addsuffix .class,$(integer_theory_ops)))
 
 $(operator_opt)/Operator.class: $(math_opt)/ExpressionItem.class $(operator_opt)/OperatorGroupMode.class
 
@@ -77,7 +79,7 @@ opt/%.class: src/%.java
 .ONESHELL: jar
 jar: all
 	cd opt/davidchangx.math/
-	jar --create --file=davidchangx.math.jar --module-version=2.1 .
+	jar --create --file=davidchangx.math.jar --module-version=2.2 .
 	mv davidchangx.math.jar ../..
 
 clean:
