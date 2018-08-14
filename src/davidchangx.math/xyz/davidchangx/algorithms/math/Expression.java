@@ -19,13 +19,13 @@ import xyz.davidchangx.algorithms.math.operator.Tail;
 /**
  * Suffix expression constructed from an infix expression.
  *
- * To contruct an Expression you need an infix expression String and a dictionary of Operator. The operator map is required to consist of two special operators: Head ("$") and Tail ("#"), which are defined as xyz.davidchangx.algorithms.math.operator.Head and xyz.davidchangx.algorithms.math.operator.Tail. To simplize the construction of operator map, we provide xyz.davidchangx.mathtool.OperatorMapGenerator to generate operator map conveniently. You can use the operators provided in package xyz.davidchangx.algorithms.math.operator, and also you can contribute your own operators by inherit class Operator. 
+ * To contruct an {@code Expression} you need an infix expression {@link String} and a dictionary of {@link Operator}. The operator map is required to consist of two special operators: {@link Head} ("$") and {@link Tail} ("#"), which are defined as {@link xyz.davidchangx.algorithms.math.operator.Head} and {@link xyz.davidchangx.algorithms.math.operator.Tail}. To simplize the construction of operator map, we provide {@link xyz.davidchangx.mathtool.OperatorMapGenerator} to generate operator map conveniently. You can use the operators provided in package {@link xyz.davidchangx.algorithms.math.operator}, and also you can contribute your own operators by inherit class {@link Operator}. 
  *
- * This class inherits Operator class so that a contributed Expression can be used as a new operator in another Expression. 
+ * This class inherits {@link Operator} class so that a contributed {@link Expression} can be used as a new operator in another {@link Expression}. 
  *
- * This class implements DoubleUnaryOperator. 
+ * This class implements {@link DoubleUnaryOperator}. 
  *
- * @version 2.1
+ * @version 3.0
  * @author David Chang
  */
 public class Expression extends Operator implements DoubleUnaryOperator
@@ -79,7 +79,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		
 		this.infix = infix;
 		this.x = x;
-		this.operatorMap = this.cloneMap(operatorMap);
+		this.operatorMap = cloneMap(operatorMap);
 		this.operatorMap.put("$",new Head());
 		this.operatorMap.put("#",new Tail());
 		this.opdStack = new ArrayDeque<Double>();
@@ -134,7 +134,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		newestOrNot = false;
 		setOrNot = false;
 	}
-	private HashMap<String,Operator> cloneMap(HashMap<String,Operator> map) //a private tool method to get a deep clone of a Operator Map
+	static HashMap<String,Operator> cloneMap(HashMap<String,Operator> map) //a tool method to get a deep clone of a Operator Map
 	{
 		HashMap<String,Operator> newMap = new HashMap<String,Operator>();
 		Set<Map.Entry<String,Operator>> set = map.entrySet();
@@ -157,11 +157,39 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		return new Expression(this.operator.substring(0,this.operator.length()-1),this.inStackPriority,this.outStackPriority,this.infix,this.operatorMap,this.x);
 	}
 	/**
+	 * Use {@link calculate(double)} intead this method. 
+	 *
+	 * Solves the value of the {@code Expression} object. This method returns nothing. The result of calculation should be obtained by invoking {@link getValue()}. 
+	 *
+	 * @deprecated
+	 * @param k the value of unknown
+	 */
+	@Deprecated
+	public void solve(double k) //solve the value of the Expression, use k as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
+	{
+		double[] x = {k};
+		value = this.solve(x);
+		setOrNot = true;
+		newestOrNot = true;
+	}
+	/**
+	 * Use {@link calculate()} intead this method. 
+	 *
+	 * Solves the value of the {@code Expression} object. This method returns nothing. The result of calculation should be obtained by invoking {@link getValue()}. 
+	 *
+	 * @deprecated
+	 */
+	@Deprecated
+	public void solve() //solve the value of the Expression, use 0 as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
+	{
+		this.solve(0);
+	}
+	/**
 	 * Solves the value of the {@code Expression} object. This method returns nothing. The result of calculation should be obtained by invoking {@link getValue()}. 
 	 *
 	 * @param k the value of unknown
 	 */
-	public void solve(double k) //solve the value of the Expression, use k as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
+	public void calculate(double k) //solve the value of the Expression, use k as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
 	{
 		double[] x = {k};
 		value = this.solve(x);
@@ -171,9 +199,9 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	/**
 	 * Solves the value of the {@code Expression} object. This method returns nothing. The result of calculation should be obtained by invoking {@link getValue()}. 
 	 */
-	public void solve() //solve the value of the Expression, use 0 as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
+	public void calculate() //solve the value of the Expression, use 0 as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
 	{
-		this.solve(0);
+		this.calculate(0);
 	}
 	/**
 	 * Calculate as a math operator. 
@@ -198,32 +226,32 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	@Override
 	public double applyAsDouble(double x) //the method implemented in DoubleUnaryOperator, solves and update the expression value an returns it immediately
 	{
-		this.solve(x);
+		this.calculate(x);
 		newestOrNot = false;
 		return this.value;
 	}
 	/**
 	 * Check if the present value which can be returned by invoking method {@link getValue()} is the newest. 
 	 *
-	 * If the value has just solved out by {@link solve(double)} or {@link solve()} and hasn't been returned by method {@link applyAsDouble(double)} or {@link getValue()}, it is the newest. 
+	 * If the value has just solved out by {@link calculate(double)} or {@link calculate()} and hasn't been returned by method {@link applyAsDouble(double)} or {@link getValue()}, it is the newest. 
 	 *
 	 * @return if the present expression value is the newest
 	 */
-	public boolean isNewest() //check if the present value which can be returned by method getValue() is the newest (if the value has just solved out by solve(double) or solve() and hasn't been returned by applyAsDouble(x) or getValue(), it is the newest).
+	public boolean isNewest() //check if the present value which can be returned by method getValue() is the newest (if the value has just solved out by calculate(double) or calculate() and hasn't been returned by applyAsDouble(x) or getValue(), it is the newest).
 	{
 		return newestOrNot;
 	}
 	/**
 	 * Gets the calculation result. 
 	 *
-	 * To guarantee that you can always get the newest value, you'd better invoke this method immediately after invoking {@link solve(double)} or {@link solve()} or use {@link isNewest()} to check before invoking this method. 
+	 * To guarantee that you can always get the newest value, you'd better invoke this method immediately after invoking {@link calculate(double)} or {@link calculate()} or use {@link isNewest()} to check before invoking this method. 
 	 *
 	 * @return the calculation result. 
 	 */
-	public double getValue() //get the solved value, to guarantee that you can get the newest value, you'd better invoke solve(double) or solve() method to calculate or use isNewest() to check before you invoke this method
+	public double getValue() //get the solved value, to guarantee that you can get the newest value, you'd better invoke calculate(double) or calculate() method to calculate or use isNewest() to check before you invoke this method
 	{
 		if(!setOrNot)
-			this.solve();
+			this.calculate();
 		newestOrNot = false;
 		return this.value;
 	}

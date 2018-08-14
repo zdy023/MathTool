@@ -7,7 +7,7 @@ import xyz.davidchangx.algorithms.math.Expression;
 /**
  * Abstract super-class of all available operators.
  *
- * @version 2.1
+ * @version 3.0
  * @author David Chang
  */
 public abstract class Operator implements ExpressionItem,Cloneable
@@ -127,7 +127,7 @@ public abstract class Operator implements ExpressionItem,Cloneable
 	 * @param x useless for {@code Operator} object
 	 */
 	@Override
-	public final void execute(double x) //inherits from ExpressionItem, used in Expression
+	public final void execute(double... x) //inherits from ExpressionItem, used in Expression
 	{
 		/*if(operandCount==0&&groupMode!=OperatorGroupMode.SINGLE)
 			return;*/

@@ -6,7 +6,7 @@ import xyz.davidchangx.algorithms.math.Expression;
 /**
  * The operand in Expression.
  *
- * @version 2.1
+ * @version 3.0
  * @author David Chang
  */
 class Operand implements ExpressionItem,Comparable<Operand>
@@ -30,7 +30,7 @@ class Operand implements ExpressionItem,Comparable<Operand>
 	 * @param x useless for {@code Operand} object. 
 	 */
 	@Override
-	public void execute(double x)
+	public void execute(double... x)
 	{
 		stack.push(value);
 	}

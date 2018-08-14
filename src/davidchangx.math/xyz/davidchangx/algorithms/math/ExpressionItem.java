@@ -3,7 +3,7 @@ package xyz.davidchangx.algorithms.math;
 /**
  * The item in Expression.
  *
- * @version 2.1
+ * @version 3.0
  * @author David Chang
  */
 @FunctionalInterface
@@ -14,5 +14,5 @@ public interface ExpressionItem
 	 *
 	 * @param x a parameter possibly in need
 	 */
-	public void execute(double x);
+	public void execute(double... x);
 }
