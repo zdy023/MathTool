@@ -16,6 +16,7 @@ mathtool_src = src/davidchangx.math/xyz/davidchangx/mathtool
 
 javac = javac --module-source-path src -d opt
 java = java -p opt -m davidchangx.math
+version=3.0
 
 # all modules
 
@@ -79,7 +80,7 @@ opt/%.class: src/%.java
 .ONESHELL: jar
 jar: all
 	cd opt/davidchangx.math/
-	jar --create --file=davidchangx.math.jar --module-version=2.2 .
+	jar --create --file=davidchangx.math.jar --module-version=$(version) .
 	mv davidchangx.math.jar ../..
 
 clean:
