@@ -28,6 +28,7 @@ import xyz.davidchangx.algorithms.math.Expression;
  * This class inherits {@link Operator} class so that a contributed {@code MultiVariantExpression} can be used as a new operator in another {@code MultiVariantExpression} or {@link Expression}. 
  *
  * @version 3.0
+ * @since 3.0
  * @author David Chang
  */
 public class MultiVariantExpression extends Operator

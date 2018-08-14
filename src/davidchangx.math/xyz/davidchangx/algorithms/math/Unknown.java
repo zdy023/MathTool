@@ -64,6 +64,7 @@ class Unknown implements ExpressionItem
 	/**
 	 * Returns the id of this unknown. 
 	 *
+	 * @since 3.0
 	 * @return the id of this unknown
 	 */
 	public int getId()

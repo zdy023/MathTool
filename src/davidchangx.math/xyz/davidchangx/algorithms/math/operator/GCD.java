@@ -6,6 +6,7 @@ import xyz.davidchangx.algorithms.math.operator.Operator;
  * Solve the greatest common divisor of two floor integers of two doubles' absolute.  
  * 
  * @version 2.2
+ * @since 2.2
  * @author David Chang
  */
 public class GCD extends Operator

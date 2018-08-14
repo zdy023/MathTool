@@ -187,6 +187,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	/**
 	 * Solves the value of the {@code Expression} object. This method returns nothing. The result of calculation should be obtained by invoking {@link getValue()}. 
 	 *
+	 * @since 3.0
 	 * @param k the value of unknown
 	 */
 	public void calculate(double k) //solve the value of the Expression, use k as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
@@ -198,6 +199,8 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	}
 	/**
 	 * Solves the value of the {@code Expression} object. This method returns nothing. The result of calculation should be obtained by invoking {@link getValue()}. 
+	 *
+	 * @since 3.0
 	 */
 	public void calculate() //solve the value of the Expression, use 0 as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
 	{

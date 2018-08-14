@@ -6,6 +6,7 @@ import xyz.davidchangx.algorithms.math.operator.Operator;
  * Solve the least common multiple of two floor integers of two doubles' absolute.  
  * 
  * @version 2.2
+ * @since 2.2
  * @author David Chang
  */
 public class LCM extends Operator
