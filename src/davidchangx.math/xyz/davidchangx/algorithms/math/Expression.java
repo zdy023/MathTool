@@ -16,16 +16,20 @@ import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import xyz.davidchangx.algorithms.math.operator.Head;
 import xyz.davidchangx.algorithms.math.operator.Tail;
+import java.io.StringReader;
+import java.util.function.Predicate;
+import java.io.CharArrayWriter;
+import java.io.IOException;
 /**
  * Suffix expression constructed from an infix expression.
  *
- * To contruct an {@code Expression} you need an infix expression {@link String} and a dictionary of {@link Operator}. The operator map is required to consist of two special operators: {@link Head} ("$") and {@link Tail} ("#"), which are defined as {@link xyz.davidchangx.algorithms.math.operator.Head} and {@link xyz.davidchangx.algorithms.math.operator.Tail}. To simplize the construction of operator map, we provide {@link xyz.davidchangx.mathtool.OperatorMapGenerator} to generate operator map conveniently. You can use the operators provided in package {@link xyz.davidchangx.algorithms.math.operator}, and also you can contribute your own operators by inherit class {@link Operator}. 
+ * To contruct an {@code Expression} you need an infix expression {@link String} and a dictionary of {@link Operator}. To simplize the construction of operator map, we provide {@link xyz.davidchangx.mathtool.OperatorMapGenerator} to generate operator map conveniently. You can use the operators provided in package {@link xyz.davidchangx.algorithms.math.operator}, and also you can contribute your own operators by inherit class {@link Operator}. 
  *
- * This class inherits {@link Operator} class so that a contributed {@link Expression} can be used as a new operator in another {@link Expression}. 
+ * This class inherits {@link Operator} class so that a contributed {@code Expression} can be used as a new operator in another {@code Expression}. 
  *
  * This class implements {@link DoubleUnaryOperator}. 
  *
- * @version 3.0
+ * @version 3.5
  * @author David Chang
  */
 public class Expression extends Operator implements DoubleUnaryOperator
@@ -43,9 +47,9 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	 * @param infix the infix expression string
 	 * @param operatorMap the operator map
 	 * @param x the character of unknown
-	 * @throws IllegalArgumentException if the infix cannot be correctly scanned. <br>The neighboring operands and operators in infix should be separate with whitespace characters, or an @{code IllegalArgumentException will be throwed.
+	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
 	 */
-	public Expression(String infix,HashMap<String,Operator> operatorMap,char x) throws IllegalArgumentException //contribute an Expression with unknown character
+	public Expression(String infix,HashMap<String,Operator> operatorMap,char x) throws IllegalArgumentException,IOException //contribute an Expression with unknown character
 	{
 		this("f",15,1,infix,operatorMap,x);
 	}
@@ -54,9 +58,9 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	 *
 	 * @param infix the infix expression string
 	 * @param operatorMap the operator map
-	 * @throws IllegalArgumentException if the infix cannot be correctly scanned. <br>The neighboring operands and operators in infix should be separate with whitespace characters, or an @{code IllegalArgumentException will be thrown.
+	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
 	 */
-	public Expression(String infix,HashMap<String,Operator> operatorMap) throws IllegalArgumentException //contribute an Expression without unknown character
+	public Expression(String infix,HashMap<String,Operator> operatorMap) throws IllegalArgumentException,IOException //contribute an Expression without unknown character
 	{
 		this(infix,operatorMap,'\0');
 	}
@@ -71,9 +75,9 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	 * @param infix the infix expression string
 	 * @param operatorMap the operator map
 	 * @param x the character of unknown
-	 * @throws IllegalArgumentException if the infix cannot be correctly scanned. <br>The neighboring operands and operators in infix should be separate with whitespace characters, or an @{code IllegalArgumentException will be thrown.
+	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
 	 */
-	public Expression(String functionName,int inStackPriority,int outStackPriority,String infix,HashMap<String,Operator> operatorMap,char x) throws IllegalArgumentException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
+	public Expression(String functionName,int inStackPriority,int outStackPriority,String infix,HashMap<String,Operator> operatorMap,char x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
 	{
 		super(functionName + "(",inStackPriority,outStackPriority,1,OperatorGroupMode.NEEDING_CLOSED);
 		
@@ -85,7 +89,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		this.opdStack = new ArrayDeque<Double>();
 		this.operatorMap.forEach((String oprName,Operator oprtr)->oprtr.setStack(opdStack));
 		
-		Scanner s = new Scanner(infix + " #"); //In operatorMap there must be the infomation about '$'(head mark) and '#'(ending mark)
+		/*Scanner s = new Scanner(infix + " #"); //In operatorMap there must be the infomation about '$'(head mark) and '#'(ending mark)
 		ArrayDeque<Operator> stack = new ArrayDeque<Operator>();
 		Pattern opPat = Pattern.compile("(?:" + x + "?[a-zA-Z_]+)*\\W*"),unknownPat = Pattern.compile(String.valueOf(x));
 		Operator nextOperator,topOperator;
@@ -129,7 +133,113 @@ public class Expression extends Operator implements DoubleUnaryOperator
 			else
 				throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + infix);
 		}
-		this.strSufix = strSufix.substring(0,strSufix.length()-1);
+		this.strSufix = strSufix.substring(0,strSufix.length()-1);*/
+
+		infix += " #";
+		var stream = new StringReader(infix);
+		ArrayDeque<Operator> stack = new ArrayDeque<>();
+		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),wordPat = Pattern.compile("\\w").asPredicate();
+		Predicate<String> numPat = Pattern.compile("-*\\d+(\\.\\d*)*|\\.\\d+").asPredicate(),unknownPat = String.valueOf(x)::equals,opPat = str->this.operatorMap.containsKey(str);
+		Predicate<String> elePat = numPat.or(unknownPat).or(opPat);
+		Unknown unknownObj = new Unknown(opdStack);
+		var buffer = new CharArrayWriter();
+		stack.push(new Head());
+		StringBuilder strSuffix = new StringBuilder();
+		sufix = new ArrayList<>();
+		Predicate<CharArrayWriter> eleHandle = new Predicate<>(){
+			public boolean test(CharArrayWriter buff)
+			{
+				String str = buff.toString();
+				if(numPat.test(str))
+				{
+					//System.out.println("node a: " + str);
+					double theNum = Double.parseDouble(str);
+					strSuffix.append(theNum + " ");
+					sufix.add(new Operand(theNum,opdStack));
+					buff.reset();
+					return true;
+				}
+				else if(unknownPat.test(str))
+				{
+					//System.out.println("node b: " + str);
+					strSuffix.append(str + " ");
+					sufix.add(unknownObj);
+					buff.reset();
+					return true;
+				}
+				else
+				{
+					for(int n = str.length();n>0;n--)
+					{
+						if(opPat.test(str.substring(0,n)))
+						{
+							String realOpStr = str.substring(0,n);
+							//System.out.println("node c: " + realOpStr);
+							Operator nextOperator = Expression.this.operatorMap.get(realOpStr);
+							Operator topOperator = stack.peek();
+							for(int priority = nextOperator.getInStackPriority();topOperator.getOutStackPriority()>=priority;topOperator = stack.peek())
+							{
+								if(realOpStr.equals("#")&&(stack.size()==1))
+									break;
+								strSuffix.append(topOperator + " ");
+								sufix.add(topOperator);
+								stack.pop();
+								if(topOperator.needsClosed())
+									break;
+							}
+							if(!nextOperator.isClosing())
+								stack.push(nextOperator);
+							buff.reset();
+							if(n==str.length())
+								return true;
+							buff.append(str.substring(n));
+							return this.test(buff);
+						}
+					}
+					return false;
+				}
+			}
+		};
+		boolean firstPunc = true;
+		for(int ch = stream.read();ch!=-1;ch = stream.read())
+		{
+			String newChar = String.valueOf((char)ch);
+			if(deliPat.test(newChar))
+			{
+				//System.out.println("node 1: " + buffer + "," + newChar);
+				if(!eleHandle.test(buffer))
+					throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + this.infix);
+			}
+			else if(wordPat.test(newChar))
+			{
+				//System.out.println("node 2: " + buffer + "," + newChar);
+				if(!firstPunc)
+				{
+					//System.out.println("node 2.1: " + buffer + "," + newChar);
+					firstPunc = true;
+					eleHandle.test(buffer);
+				}
+				buffer.append(newChar);
+			}
+			else
+			{
+				//System.out.println("node 3: " + buffer + "," + newChar);
+				if(firstPunc)
+				{
+					//System.out.println("node 3.1: " + buffer + "," + newChar);
+					firstPunc = false;
+					eleHandle.test(buffer);
+				}
+				buffer.append(newChar);
+			}
+		}
+		if(!eleHandle.test(buffer))
+		{
+			//System.out.println("node 4");
+			throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + this.infix);
+		}
+		this.strSufix = strSuffix.toString().trim();
+		//System.out.println("node 5: " + strSufix);
 		
 		newestOrNot = false;
 		setOrNot = false;
@@ -154,7 +264,15 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	@Override
 	public Object clone()
 	{
-		return new Expression(this.operator.substring(0,this.operator.length()-1),this.inStackPriority,this.outStackPriority,this.infix,this.operatorMap,this.x);
+		try
+		{
+			return new Expression(this.operator.substring(0,this.operator.length()-1),this.inStackPriority,this.outStackPriority,this.infix,this.operatorMap,this.x);
+		}
+		catch(IOException e) {}
+		finally
+		{
+			return null;
+		}
 	}
 	/**
 	 * Use {@link calculate(double)} intead this method. 

@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+version = 3.5
+
 algorithms_opt = opt/davidchangx.math/xyz/davidchangx/algorithms
 equation_opt = $(algorithms_opt)/equation
 math_opt = $(algorithms_opt)/math
@@ -14,9 +16,8 @@ operator_src = $(math_src)/operator
 
 mathtool_src = src/davidchangx.math/xyz/davidchangx/mathtool
 
-javac = javac --module-source-path src -d opt
+javac = javac --module-source-path src -d opt --module-version $(version)
 java = java -p opt -m davidchangx.math
-version=3.0
 
 # all modules
 

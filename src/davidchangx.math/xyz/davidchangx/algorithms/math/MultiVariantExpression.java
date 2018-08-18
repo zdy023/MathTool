@@ -20,6 +20,10 @@ import java.util.Arrays;
 import java.util.function.ToIntBiFunction;
 import java.util.stream.Stream;
 import xyz.davidchangx.algorithms.math.Expression;
+import java.io.StringReader;
+import java.util.function.Predicate;
+import java.io.CharArrayWriter;
+import java.io.IOException;
 /**
  * Suffix expression constructed from an infix expression.
  *
@@ -27,7 +31,7 @@ import xyz.davidchangx.algorithms.math.Expression;
  *
  * This class inherits {@link Operator} class so that a contributed {@code MultiVariantExpression} can be used as a new operator in another {@code MultiVariantExpression} or {@link Expression}. 
  *
- * @version 3.0
+ * @version 3.5
  * @since 3.0
  * @author David Chang
  */
@@ -47,9 +51,9 @@ public class MultiVariantExpression extends Operator
 	 * @param infix the infix expression string
 	 * @param operatorMap the operator map
 	 * @param x the character of unknown
-	 * @throws IllegalArgumentException if the infix cannot be correctly scanned. <br>The neighboring operands and operators in infix should be separate with whitespace characters, or an @{code IllegalArgumentException will be throwed.
+	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
 	 */
-	public MultiVariantExpression(String infix,HashMap<String,Operator> operatorMap,char... x) throws IllegalArgumentException //contribute an MultiVariantExpression with unknown character
+	public MultiVariantExpression(String infix,HashMap<String,Operator> operatorMap,char... x) throws IllegalArgumentException,IOException //contribute an MultiVariantExpression with unknown character
 	{
 		this("f",15,1,infix,operatorMap,x);
 	}
@@ -64,9 +68,9 @@ public class MultiVariantExpression extends Operator
 	 * @param infix the infix expression string
 	 * @param operatorMap the operator map
 	 * @param x the character of unknown
-	 * @throws IllegalArgumentException if the infix cannot be correctly scanned. <br>The neighboring operands and operators in infix should be separate with whitespace characters, or an @{code IllegalArgumentException will be thrown.
+	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
 	 */
-	public MultiVariantExpression(String functionName,int inStackPriority,int outStackPriority,String infix,HashMap<String,Operator> operatorMap,char[] x) throws IllegalArgumentException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
+	public MultiVariantExpression(String functionName,int inStackPriority,int outStackPriority,String infix,HashMap<String,Operator> operatorMap,char... x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
 	{
 		super(functionName + "(",inStackPriority,outStackPriority,x.length,OperatorGroupMode.NEEDING_CLOSED);
 		
@@ -77,9 +81,8 @@ public class MultiVariantExpression extends Operator
 		this.operatorMap.put("#",new Tail());
 		this.opdStack = new ArrayDeque<Double>(); //the operand stack
 		this.operatorMap.forEach((String oprName,Operator oprtr)->oprtr.setStack(opdStack));
-		this.unknowns = Stream.<Unknown>iterate(new Unknown(opdStack,0),unknown->unknown.getId()<x.length,unknown->new Unknown(opdStack,unknown.getId()+1)).toArray(Unknown[]::new);
 		
-		Scanner s = new Scanner(infix + " #"); //In operatorMap there must be the infomation about '$'(head mark) and '#'(ending mark)
+		/*Scanner s = new Scanner(infix + " #"); //In operatorMap there must be the infomation about '$'(head mark) and '#'(ending mark)
 		ArrayDeque<Operator> stack = new ArrayDeque<Operator>(); //the operator stack
 		Pattern opPat = Pattern.compile("(?:[" + String.valueOf(x) + "]?[a-zA-Z_]+)*\\W*"),unknownPat = Pattern.compile(String.valueOf(x));
 		ToIntBiFunction<char[],Character> indexOf = (array,symbol)->{
@@ -128,7 +131,119 @@ public class MultiVariantExpression extends Operator
 			else
 				throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + infix);
 		}
-		this.strSufix = strSufix.substring(0,strSufix.length()-1);
+		this.strSufix = strSufix.substring(0,strSufix.length()-1);*/
+
+
+		infix += " #";
+		var stream = new StringReader(infix);
+		ArrayDeque<Operator> stack = new ArrayDeque<>();
+		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),wordPat = Pattern.compile("\\w").asPredicate();
+		Predicate<String> numPat = Pattern.compile("-*\\d+(\\.\\d*)*|\\.\\d+").asPredicate(),unknownPat = String.valueOf(x)::equals,opPat = str->this.operatorMap.containsKey(str);
+		Predicate<String> elePat = numPat.or(unknownPat).or(opPat);
+		this.unknowns = Stream.<Unknown>iterate(new Unknown(opdStack,0),unknown->unknown.getId()<x.length,unknown->new Unknown(opdStack,unknown.getId()+1)).toArray(Unknown[]::new);
+		ToIntBiFunction<char[],Character> indexOf = (array,symbol)->{
+			int i = 0;
+			for(;array[i]!=symbol;i++) ;
+			return i;
+		};
+		var buffer = new CharArrayWriter();
+		stack.push(new Head());
+		StringBuilder strSuffix = new StringBuilder();
+		sufix = new ArrayList<>();
+		Predicate<CharArrayWriter> eleHandle = new Predicate<>(){
+			public boolean test(CharArrayWriter buff)
+			{
+				String str = buff.toString();
+				if(numPat.test(str))
+				{
+					//System.out.println("node a: " + str);
+					double theNum = Double.parseDouble(str);
+					strSuffix.append(theNum + " ");
+					sufix.add(new Operand(theNum,opdStack));
+					buff.reset();
+					return true;
+				}
+				else if(unknownPat.test(str))
+				{
+					//System.out.println("node b: " + str);
+					strSuffix.append(str + " ");
+					sufix.add(unknowns[indexOf.applyAsInt(x,str.charAt(0))]);
+					buff.reset();
+					return true;
+				}
+				else
+				{
+					for(int n = str.length();n>0;n--)
+					{
+						if(opPat.test(str.substring(0,n)))
+						{
+							String realOpStr = str.substring(0,n);
+							//System.out.println("node c: " + realOpStr);
+							Operator nextOperator = MultiVariantExpression.this.operatorMap.get(realOpStr);
+							Operator topOperator = stack.peek();
+							for(int priority = nextOperator.getInStackPriority();topOperator.getOutStackPriority()>=priority;topOperator = stack.peek())
+							{
+								if(realOpStr.equals("#")&&(stack.size()==1))
+									break;
+								strSuffix.append(topOperator + " ");
+								sufix.add(topOperator);
+								stack.pop();
+								if(topOperator.needsClosed())
+									break;
+							}
+							if(!nextOperator.isClosing())
+								stack.push(nextOperator);
+							buff.reset();
+							if(n==str.length())
+								return true;
+							buff.append(str.substring(n));
+							return this.test(buff);
+						}
+					}
+					return false;
+				}
+			}
+		};
+		boolean firstPunc = true;
+		for(int ch = stream.read();ch!=-1;ch = stream.read())
+		{
+			String newChar = String.valueOf((char)ch);
+			if(deliPat.test(newChar))
+			{
+				//System.out.println("node 1: " + buffer + "," + newChar);
+				if(!eleHandle.test(buffer))
+					throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + this.infix);
+			}
+			else if(wordPat.test(newChar))
+			{
+				//System.out.println("node 2: " + buffer + "," + newChar);
+				if(!firstPunc)
+				{
+					//System.out.println("node 2.1: " + buffer + "," + newChar);
+					firstPunc = true;
+					eleHandle.test(buffer);
+				}
+				buffer.append(newChar);
+			}
+			else
+			{
+				//System.out.println("node 3: " + buffer + "," + newChar);
+				if(firstPunc)
+				{
+					//System.out.println("node 3.1: " + buffer + "," + newChar);
+					firstPunc = false;
+					eleHandle.test(buffer);
+				}
+				buffer.append(newChar);
+			}
+		}
+		if(!eleHandle.test(buffer))
+		{
+			//System.out.println("node 4");
+			throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + this.infix);
+		}
+		this.strSufix = strSuffix.toString().trim();
+		//System.out.println("node 5: " + strSufix);
 		
 		newestOrNot = false;
 		setOrNot = false;
@@ -141,7 +256,14 @@ public class MultiVariantExpression extends Operator
 	@Override
 	public Object clone()
 	{
-		return new MultiVariantExpression(this.operator.substring(0,this.operator.length()-1),this.inStackPriority,this.outStackPriority,this.infix,this.operatorMap,this.x);
+		try
+		{
+			return new MultiVariantExpression(this.operator.substring(0,this.operator.length()-1),this.inStackPriority,this.outStackPriority,this.infix,this.operatorMap,this.x);
+		}
+		catch(IOException e)
+		{
+			return null;
+		}
 	}
 	/**
 	 * Solves the value of the {@code Expression} object. This method returns nothing. The result of calculation should be obtained by invoking {@link getValue()}. 

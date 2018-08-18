@@ -8,6 +8,7 @@ import xyz.davidchangx.algorithms.math.operator.Operator;
 import java.lang.reflect.InvocationTargetException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 /**
  * A simple application to solve the roots of a function using class {@link xyz.davidchangx.algorithms.equation.SecantRoot}.
  *
@@ -84,6 +85,11 @@ public class SolveEquation
 			System.exit(0);
 		}
 		catch(IllegalArgumentException e)
+		{
+			System.out.println(e);
+			System.exit(0);
+		}
+		catch(IOException e)
 		{
 			System.out.println(e);
 			System.exit(0);

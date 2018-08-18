@@ -12,22 +12,33 @@ To simply use this API you may need class `Expression` and `OperatorMapGenerator
 
 ```java
 var operatorMap = OperatorMapGenerator.getBasicOperatorMap(new File("operators.lst")); //generate operator map
-Expression exp = new Expression("3 + 2",operatorMap); //construct an instance of Expression
-exp.solve(); //calculate the value
+Expression exp = new Expression("3+2",operatorMap); //construct an instance of Expression
+exp.calculate(); //calculate the value
 System.out.println(exp.getValue());
 ```
 
-Remember to seperator each operand and operator by space or tab or other white space character. About the usage of `OperatorMapGenerator`, refer to [About `OperatorMapGenerator`]. 
+ Class `Expression` always tries to parse the longest substring from start of a string consisting of neiboring punctuations as an operator. Sometimes several operators may confuse with each other, for example "|(" (`AbsoluteLeft`), "|" (`Or`), "(" (`LeftBracket`) may confuse. Remember to insert whitespace at proper position to avoid confusing and wrong parsing. 
+
+ About the usage of `OperatorMapGenerator`, refer to [About `OperatorMapGenerator`]. 
 
 Also you can construct an `Expression` with unknown character, and use is as a math function. Our `Expression` class implements interface `DoubleUnaryOperator` so that you can use is as an instance of `DoubleUnaryOperator`. Here is an example: 
 
 ```java
 var operatorMap = OperatorMapGenerator.getBasicOperatorMap(new File("operators.lst")); //generate operator map
-Expression exp = new Expression("4 * x + 5",operatorMap,'x'); //construct an instance of Expression
-exp.solve(3); //calculate the value
+Expression exp = new Expression("4*x+5",operatorMap,'x'); //construct an instance of Expression
+exp.calculate(3); //calculate the value
 System.out.println(exp.getValue());
 DoubleStream.iterate(0,x->x<=20,x->x+1).map(exp).forEach(x->{System.out.print(x + " ");}); //use this Expression as a DoubleUnaryOperator
 System.out.println();
+```
+
+We provide `MultiVariantExpression` to support a multivariant function as well. The interfaces of `MultiVariantExpression` is greatly similar to these of `Expression`. However, `MultiVariantExpression` cannot be used as an instance of `DoubleUnaryOperator`. Here is a simple example of `MultiVariantExpression`: 
+
+```java
+var operatorMap = OperatorMapGenerator.getOperatorMapByGroupPattern(new File("operators.lst"),"basic|trigonometric"); //generate operator map
+var exp = new MultiVariantExpression("3*sin(2*x+4)-5*cos(y-3)",operatorMap,'x','y'); construct an instance of MultiVariantExpression
+exp.calculate(3,4); //calculate the value
+System.out.println(exp.getValue());
 ```
 
 ## API `equation`
@@ -96,7 +107,7 @@ To use `OperatorMapGenerator` you need to provide an operator list in such a for
 3. The third column is optional to provide the information about group. If you provide the information of the group, you can use the method `HashMap<String,Operator> getOperatorMapByGroupPattern(File,String)` to get the operator map. 
 4. The fourth column after semicolon in my exsample is in form "in-stack priority, out-stack priority, operand count". `OperatorMapGenerator` doesn't interpret the content after a semicolon, so you can use a semicolon to lead the comments. That means you'd better not use a semicolon in the string format of you own operator if you will use `OperatorMapGenerator` as well, though our `Expression` supports all kinds of format of operators. 
 
-You can refer to `operators.lst` for a strict normative example of operator list. I suggest that you have a look at this file help you to deal with class `Expression` and class `OperatorMapGenerator` better. 
+You can refer to `operators.lst` for a strict normative example of operator list. I'm sure that you have a look at this file helps you to deal with class `Expression` and class `OperatorMapGenerator` better. 
 
 ## Customized Operator Suggetions
 

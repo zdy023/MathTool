@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import xyz.davidchangx.mathtool.OperatorMapGenerator;
+import java.io.IOException;
 /**
  * Simple application to draw the plot of a function.
  *
@@ -215,6 +216,11 @@ public class FunctionDrawer extends JFrame
 			new FunctionDrawer(new Expression(infix,operatorMap,'x'),width,height,xCenter,yCenter,xScale,yScale,dx);
 		}
 		catch(IllegalArgumentException e)
+		{
+			System.out.println(e);
+			System.exit(0);
+		}
+		catch(IOException e)
 		{
 			System.out.println(e);
 			System.exit(0);
