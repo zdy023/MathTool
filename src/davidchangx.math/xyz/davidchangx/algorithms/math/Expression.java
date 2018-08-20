@@ -140,7 +140,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		var stream = new StringReader(infix);
 		ArrayDeque<Operator> stack = new ArrayDeque<>();
 		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),wordPat = Pattern.compile("\\w").asPredicate();
-		Predicate<String> numPat = Pattern.compile("-*\\d+(\\.\\d*)*|\\.\\d+").asPredicate(),unknownPat = String.valueOf(x)::equals,opPat = str->this.operatorMap.containsKey(str);
+		Predicate<String> numPat = Pattern.compile("-*\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),unknownPat = String.valueOf(x)::equals,opPat = str->this.operatorMap.containsKey(str);
 		Predicate<String> elePat = numPat.or(unknownPat).or(opPat);
 		Unknown unknownObj = new Unknown(opdStack);
 		var buffer = new CharArrayWriter();

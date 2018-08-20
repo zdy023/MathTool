@@ -139,7 +139,7 @@ public class MultiVariantExpression extends Operator
 		var stream = new StringReader(infix);
 		ArrayDeque<Operator> stack = new ArrayDeque<>();
 		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),wordPat = Pattern.compile("\\w").asPredicate();
-		Predicate<String> numPat = Pattern.compile("-*\\d+(\\.\\d*)*|\\.\\d+").asPredicate(),unknownPat = String.valueOf(x)::equals,opPat = str->this.operatorMap.containsKey(str);
+		Predicate<String> numPat = Pattern.compile("-*\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),unknownPat = String.valueOf(x)::equals,opPat = str->this.operatorMap.containsKey(str);
 		Predicate<String> elePat = numPat.or(unknownPat).or(opPat);
 		this.unknowns = Stream.<Unknown>iterate(new Unknown(opdStack,0),unknown->unknown.getId()<x.length,unknown->new Unknown(opdStack,unknown.getId()+1)).toArray(Unknown[]::new);
 		ToIntBiFunction<char[],Character> indexOf = (array,symbol)->{
