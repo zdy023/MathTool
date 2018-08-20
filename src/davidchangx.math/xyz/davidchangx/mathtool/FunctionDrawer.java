@@ -18,10 +18,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import xyz.davidchangx.mathtool.OperatorMapGenerator;
 import java.io.IOException;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 /**
  * Simple application to draw the plot of a function.
  *
- * @version 2.1
+ * @version 3.6.1
  * @author David Chang
  */
 public class FunctionDrawer extends JFrame
@@ -42,6 +44,8 @@ public class FunctionDrawer extends JFrame
 	 * <li>The horizontal and vertical scale. Scale is how long in logical coordinate system a pixel represents. </li>
 	 * <li>The horizontal step. </li>
 	 *
+	 * The numeric parameters should be positive. If invalid parameter is offered, this method will choose a proper valid parameter. 
+	 *
 	 * @param function the function graph of which is to be rendered
 	 * @param width the width of frame
 	 * @param height the height of frame
@@ -54,9 +58,16 @@ public class FunctionDrawer extends JFrame
 	public FunctionDrawer(DoubleUnaryOperator function,int width,int height,double xCenter,double yCenter,double xScale,double yScale,double dx) //constructed parameters: width, height of frame; the coordinate of center point; horizontal and vertical scale; increment of x while plotting
 	{
 		this.function = function;
-		this.xScale = xScale;
-		this.yScale = yScale;
-		this.dx = dx;
+		if(width<=0||height<=0)
+		{
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			width = width>0?width:screenSize.width/3;
+			height = height>0?height:screenSize.height/3;
+		}
+		double minSize = (double)Math.min(width,height);
+		this.xScale = xScale>0.?xScale:minSize/12.;
+		this.yScale = yScale>0.?yScale:minSize/12.;
+		this.dx = dx>0.?dx:0.05;
 		this.xCenter = xCenter;
 		this.yCenter = yCenter;
 

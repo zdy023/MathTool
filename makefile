@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-version = 3.6
+version = 3.6.1
 
 algorithms_opt = opt/davidchangx.math/xyz/davidchangx/algorithms
 equation_opt = $(algorithms_opt)/equation

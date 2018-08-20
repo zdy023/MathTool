@@ -8,7 +8,11 @@ This library provides a Java module containing several simple math APIs: `expres
 
 ## API `expression`
 
-To simply use this API you may need class `Expression` and `OperatorMapGenerator`. You may use `OperatorMapGenerator` to generate a `HashMap` with structure `<String,Operator>` needed by class Expression and use `Expression` to construct a computable math expression model. Here is an example: 
+To simply use this API you may need class `Expression` and `OperatorMapGenerator`. You may use `OperatorMapGenerator` to generate a `HashMap` with structure `<String,Operator>` needed by class Expression and use `Expression` to construct a computable math expression model. 
+
+As the current API cannot correctly process negative number with negative sign ("-"), please always use the negative operator in used operator set instead of writing negative sign straightly in front of a number, aka. please write "-(3)" instead of writing "-3" if you're using the default operator set provided by us. 
+
+Here is an example: 
 
 ```java
 var operatorMap = OperatorMapGenerator.getBasicOperatorMap(new File("operators.lst")); //generate operator map

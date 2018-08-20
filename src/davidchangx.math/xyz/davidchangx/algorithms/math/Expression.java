@@ -145,6 +145,14 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		Unknown unknownObj = new Unknown(opdStack);
 		var buffer = new CharArrayWriter();
 		stack.push(new Head());
+		/*class WrappedBoolean {
+			boolean value;
+			WrappedBoolean()
+			{
+				this.value = false;
+			}
+		}
+		WrappedBoolean headOfBlockOrNot = new WrappedBoolean();*/
 		StringBuilder strSuffix = new StringBuilder();
 		sufix = new ArrayList<>();
 		Predicate<CharArrayWriter> eleHandle = new Predicate<>(){
@@ -157,6 +165,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 					double theNum = Double.parseDouble(str);
 					strSuffix.append(theNum + " ");
 					sufix.add(new Operand(theNum,opdStack));
+					//headOfBlockOrNot.value = false;
 					buff.reset();
 					return true;
 				}
@@ -165,6 +174,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 					//System.out.println("node b: " + str);
 					strSuffix.append(str + " ");
 					sufix.add(unknownObj);
+					//headOfBlockOrNot.value = false;
 					buff.reset();
 					return true;
 				}
@@ -190,6 +200,10 @@ public class Expression extends Operator implements DoubleUnaryOperator
 								if(topOperator.needsClosed())
 									break;
 							}
+							/*if(nextOperator.needsClosed())
+								//headOfBlockOrNot.value = true;
+							else
+								//headOfBlockOrNot.value = false;*/
 							if(!nextOperator.isClosing())
 								stack.push(nextOperator);
 							buff.reset();
