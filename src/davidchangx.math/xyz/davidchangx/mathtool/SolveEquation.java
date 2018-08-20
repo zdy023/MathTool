@@ -74,7 +74,7 @@ public class SolveEquation
 		s.useDelimiter("\\n|\\r|\\n\\r");
 		try
 		{
-			Expression function = new Expression(s.next(),operatorMap,'x');
+			Expression function = new Expression(s.next(),operatorMap,"x");
 			double root = SecantRoot.solve(a,b,function,accuracy);
 			System.out.println("The root is " + root + ". ");
 		}

@@ -224,7 +224,7 @@ public class FunctionDrawer extends JFrame
 		//new FunctionDrawer(x->x,width,height,xScale,yScale,dx);
 		try
 		{
-			new FunctionDrawer(new Expression(infix,operatorMap,'x'),width,height,xCenter,yCenter,xScale,yScale,dx);
+			new FunctionDrawer(new Expression(infix,operatorMap,"x"),width,height,xCenter,yCenter,xScale,yScale,dx);
 		}
 		catch(IllegalArgumentException e)
 		{

@@ -29,7 +29,7 @@ import java.io.IOException;
  *
  * This class implements {@link DoubleUnaryOperator}. 
  *
- * @version 3.6
+ * @version 4.0
  * @author David Chang
  */
 public class Expression extends Operator implements DoubleUnaryOperator
@@ -37,7 +37,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	private String strSufix,infix;
 	private ArrayList<ExpressionItem> sufix;
 	private double value;
-	private char x;
+	private String x;
 	private HashMap<String,Operator> operatorMap;
 	private ArrayDeque<Double> opdStack;
 	private boolean newestOrNot,setOrNot;
@@ -49,7 +49,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	 * @param x the character of unknown
 	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
 	 */
-	public Expression(String infix,HashMap<String,Operator> operatorMap,char x) throws IllegalArgumentException,IOException //contribute an Expression with unknown character
+	public Expression(String infix,HashMap<String,Operator> operatorMap,String x) throws IllegalArgumentException,IOException //contribute an Expression with unknown character
 	{
 		this("f",15,1,infix,operatorMap,x);
 	}
@@ -62,7 +62,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	 */
 	public Expression(String infix,HashMap<String,Operator> operatorMap) throws IllegalArgumentException,IOException //contribute an Expression without unknown character
 	{
-		this(infix,operatorMap,'\0');
+		this(infix,operatorMap,"\0");
 	}
 	/**
 	 * Constructs an {@code Expression} object from given function name, in-stack and out-stack priority, infix string, an operator map and the character of unknown. 
@@ -77,7 +77,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	 * @param x the character of unknown
 	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
 	 */
-	public Expression(String functionName,int inStackPriority,int outStackPriority,String infix,HashMap<String,Operator> operatorMap,char x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
+	public Expression(String functionName,int inStackPriority,int outStackPriority,String infix,HashMap<String,Operator> operatorMap,String x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
 	{
 		super(functionName + "(",inStackPriority,outStackPriority,1,OperatorGroupMode.NEEDING_CLOSED);
 		
@@ -140,7 +140,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		var stream = new StringReader(infix);
 		ArrayDeque<Operator> stack = new ArrayDeque<>();
 		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),wordPat = Pattern.compile("\\w").asPredicate();
-		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),unknownPat = String.valueOf(x)::equals,opPat = str->this.operatorMap.containsKey(str);
+		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),unknownPat = x::equals,opPat = str->this.operatorMap.containsKey(str);
 		Predicate<String> elePat = numPat.or(unknownPat).or(opPat);
 		Unknown unknownObj = new Unknown(opdStack);
 		var buffer = new CharArrayWriter();

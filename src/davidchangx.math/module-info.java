@@ -2,7 +2,7 @@
  * In this module several simple tools to help to construct a math model are provided. 
  *
  * @author David Chang
- * @version 3.6.1
+ * @version 4.0
  */
 module davidchangx.math {
 	exports xyz.davidchangx.algorithms.math;

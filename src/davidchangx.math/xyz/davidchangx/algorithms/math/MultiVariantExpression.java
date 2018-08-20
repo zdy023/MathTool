@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * This class inherits {@link Operator} class so that a contributed {@code MultiVariantExpression} can be used as a new operator in another {@code MultiVariantExpression} or {@link Expression}. 
  *
- * @version 3.6
+ * @version 4.0
  * @since 3.0
  * @author David Chang
  */
@@ -40,7 +40,7 @@ public class MultiVariantExpression extends Operator
 	private String strSufix,infix;
 	private ArrayList<ExpressionItem> sufix;
 	private double value;
-	private char[] x;
+	private String[] x;
 	private Unknown[] unknowns;
 	private HashMap<String,Operator> operatorMap;
 	private ArrayDeque<Double> opdStack;
@@ -53,7 +53,7 @@ public class MultiVariantExpression extends Operator
 	 * @param x the character of unknown
 	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
 	 */
-	public MultiVariantExpression(String infix,HashMap<String,Operator> operatorMap,char... x) throws IllegalArgumentException,IOException //contribute an MultiVariantExpression with unknown character
+	public MultiVariantExpression(String infix,HashMap<String,Operator> operatorMap,String... x) throws IllegalArgumentException,IOException //contribute an MultiVariantExpression with unknown character
 	{
 		this("f",15,1,infix,operatorMap,x);
 	}
@@ -70,7 +70,7 @@ public class MultiVariantExpression extends Operator
 	 * @param x the character of unknown
 	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
 	 */
-	public MultiVariantExpression(String functionName,int inStackPriority,int outStackPriority,String infix,HashMap<String,Operator> operatorMap,char... x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
+	public MultiVariantExpression(String functionName,int inStackPriority,int outStackPriority,String infix,HashMap<String,Operator> operatorMap,String... x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
 	{
 		super(functionName + "(",inStackPriority,outStackPriority,x.length,OperatorGroupMode.NEEDING_CLOSED);
 		
@@ -139,12 +139,12 @@ public class MultiVariantExpression extends Operator
 		var stream = new StringReader(infix);
 		ArrayDeque<Operator> stack = new ArrayDeque<>();
 		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),wordPat = Pattern.compile("\\w").asPredicate();
-		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),unknownPat = String.valueOf(x)::equals,opPat = str->this.operatorMap.containsKey(str);
+		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),unknownPat = str->Arrays.stream(x).anyMatch(un->str.equals(un)),opPat = str->this.operatorMap.containsKey(str);
 		Predicate<String> elePat = numPat.or(unknownPat).or(opPat);
 		this.unknowns = Stream.<Unknown>iterate(new Unknown(opdStack,0),unknown->unknown.getId()<x.length,unknown->new Unknown(opdStack,unknown.getId()+1)).toArray(Unknown[]::new);
-		ToIntBiFunction<char[],Character> indexOf = (array,symbol)->{
+		ToIntBiFunction<String[],Character> indexOf = (array,symbol)->{
 			int i = 0;
-			for(;array[i]!=symbol;i++) ;
+			for(;!array[i].equals(symbol);i++) ;
 			return i;
 		};
 		var buffer = new CharArrayWriter();
