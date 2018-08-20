@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * This class inherits {@link Operator} class so that a contributed {@code MultiVariantExpression} can be used as a new operator in another {@code MultiVariantExpression} or {@link Expression}. 
  *
- * @version 4.0
+ * @version 4.0.1
  * @since 3.0
  * @author David Chang
  */
@@ -144,8 +144,8 @@ public class MultiVariantExpression extends Operator
 		this.unknowns = Stream.<Unknown>iterate(new Unknown(opdStack,0),unknown->unknown.getId()<x.length,unknown->new Unknown(opdStack,unknown.getId()+1)).toArray(Unknown[]::new);
 		ToIntBiFunction<String[],Character> indexOf = (array,symbol)->{
 			int i = 0;
-			for(;!array[i].equals(symbol);i++) ;
-			return i;
+			for(;i<array.length&&!array[i].equals(symbol);i++) ;
+			return i==array.length?-1:i;
 		};
 		var buffer = new CharArrayWriter();
 		stack.push(new Head());
