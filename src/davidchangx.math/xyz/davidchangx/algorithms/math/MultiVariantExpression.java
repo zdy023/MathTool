@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * This class inherits {@link Operator} class so that a contributed {@code MultiVariantExpression} can be used as a new operator in another {@code MultiVariantExpression} or {@link Expression}. 
  *
- * @version 3.5
+ * @version 3.6
  * @since 3.0
  * @author David Chang
  */
@@ -76,11 +76,12 @@ public class MultiVariantExpression extends Operator
 		
 		this.infix = infix;
 		this.x = Arrays.copyOf(x,x.length);
-		this.operatorMap = Expression.cloneMap(operatorMap);
+		//this.operatorMap = Expression.cloneMap(operatorMap);
+		this.operatorMap = operatorMap;
 		this.operatorMap.put("$",new Head());
 		this.operatorMap.put("#",new Tail());
 		this.opdStack = new ArrayDeque<Double>(); //the operand stack
-		this.operatorMap.forEach((String oprName,Operator oprtr)->oprtr.setStack(opdStack));
+		//this.operatorMap.forEach((String oprName,Operator oprtr)->oprtr.setStack(opdStack));
 		
 		/*Scanner s = new Scanner(infix + " #"); //In operatorMap there must be the infomation about '$'(head mark) and '#'(ending mark)
 		ArrayDeque<Operator> stack = new ArrayDeque<Operator>(); //the operator stack
@@ -186,7 +187,9 @@ public class MultiVariantExpression extends Operator
 								if(realOpStr.equals("#")&&(stack.size()==1))
 									break;
 								strSuffix.append(topOperator + " ");
-								sufix.add(topOperator);
+								Operator topClone = (Operator)topOperator.clone();
+								topClone.setStack(MultiVariantExpression.this.opdStack);
+								sufix.add(topClone);
 								stack.pop();
 								if(topOperator.needsClosed())
 									break;

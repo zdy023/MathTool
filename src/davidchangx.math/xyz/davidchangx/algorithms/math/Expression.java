@@ -29,7 +29,7 @@ import java.io.IOException;
  *
  * This class implements {@link DoubleUnaryOperator}. 
  *
- * @version 3.5
+ * @version 3.6
  * @author David Chang
  */
 public class Expression extends Operator implements DoubleUnaryOperator
@@ -83,11 +83,12 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		
 		this.infix = infix;
 		this.x = x;
-		this.operatorMap = cloneMap(operatorMap);
+		//this.operatorMap = cloneMap(operatorMap);
+		this.operatorMap = operatorMap;
 		this.operatorMap.put("$",new Head());
 		this.operatorMap.put("#",new Tail());
 		this.opdStack = new ArrayDeque<Double>();
-		this.operatorMap.forEach((String oprName,Operator oprtr)->oprtr.setStack(opdStack));
+		//this.operatorMap.forEach((String oprName,Operator oprtr)->oprtr.setStack(opdStack));
 		
 		/*Scanner s = new Scanner(infix + " #"); //In operatorMap there must be the infomation about '$'(head mark) and '#'(ending mark)
 		ArrayDeque<Operator> stack = new ArrayDeque<Operator>();
@@ -182,7 +183,9 @@ public class Expression extends Operator implements DoubleUnaryOperator
 								if(realOpStr.equals("#")&&(stack.size()==1))
 									break;
 								strSuffix.append(topOperator + " ");
-								sufix.add(topOperator);
+								Operator topClone = (Operator)topOperator.clone();
+								topClone.setStack(Expression.this.opdStack);
+								sufix.add(topClone);
 								stack.pop();
 								if(topOperator.needsClosed())
 									break;
