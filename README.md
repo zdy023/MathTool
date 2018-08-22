@@ -25,11 +25,11 @@ System.out.println(exp.getValue());
 
  About the usage of `OperatorMapGenerator`, refer to [About `OperatorMapGenerator`]. 
 
-Also you can construct an `Expression` with unknown character, and use is as a math function. Our `Expression` class implements interface `DoubleUnaryOperator` so that you can use is as an instance of `DoubleUnaryOperator`. Here is an example: 
+Also you can construct an `Expression` with unknown character, and use it as a math function. Our `Expression` class implements interface `DoubleUnaryOperator` so that you can use it as an instance of `DoubleUnaryOperator`. Here is an example: 
 
 ```java
 var operatorMap = OperatorMapGenerator.getBasicOperatorMap(new File("operators.lst")); //generate operator map
-Expression exp = new Expression("4*x+5",operatorMap,'x'); //construct an instance of Expression
+Expression exp = new Expression("4*x+5",operatorMap,"x"); //construct an instance of Expression
 exp.calculate(3); //calculate the value
 System.out.println(exp.getValue());
 DoubleStream.iterate(0,x->x<=20,x->x+1).map(exp).forEach(x->{System.out.print(x + " ");}); //use this Expression as a DoubleUnaryOperator
@@ -40,7 +40,7 @@ We provide `MultiVariantExpression` to support a multivariant function as well. 
 
 ```java
 var operatorMap = OperatorMapGenerator.getOperatorMapByGroupPattern(new File("operators.lst"),"basic|trigonometric"); //generate operator map
-var exp = new MultiVariantExpression("3*sin(2*x+4)-5*cos(y-3)",operatorMap,'x','y'); construct an instance of MultiVariantExpression
+var exp = new MultiVariantExpression("3*sin(2*x+4)-5*cos(y-3)",operatorMap,"x","y"); construct an instance of MultiVariantExpression
 exp.calculate(3,4); //calculate the value
 System.out.println(exp.getValue());
 ```
