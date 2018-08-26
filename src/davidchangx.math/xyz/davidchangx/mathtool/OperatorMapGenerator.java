@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.Scanner;
 import java.lang.reflect.InvocationTargetException;
 import java.io.FileNotFoundException;
+import java.util.function.Predicate;
 /**
  * Tool class to generate operator map required by Expression conveniently.
  *
@@ -23,7 +24,7 @@ import java.io.FileNotFoundException;
  *
  * We provide package {@code xyz.davidchangx.algorithms.math.operator} as the default {@link Operator} library and "operators.lst" as a list sample. You can directly use this list file when you use this class to generate operator maps with {@link Operator}-s in {@code xyz.davidchangx.algorithms.math.operator}. 
  *
- * @version 2.1
+ * @version 4.5
  * @author David Chang
  */
 public class OperatorMapGenerator
@@ -75,7 +76,7 @@ public class OperatorMapGenerator
 		Scanner opFinder = new Scanner(operatorList);
 		opFinder.useDelimiter("(\\n\\r?|\\r)+");
 		Pattern p = Pattern.compile(opGroupPattern);
-		var pre = p.asPredicate();
+		Predicate<String> pre = p.asPredicate();
 		for(;opFinder.hasNext();)
 		{
 			String opDefStat = opFinder.next();

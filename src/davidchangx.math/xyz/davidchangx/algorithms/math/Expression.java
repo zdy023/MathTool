@@ -1,7 +1,7 @@
 package xyz.davidchangx.algorithms.math;
 import java.util.ArrayDeque;
 import java.util.Scanner;
-import java.util.HashMap;
+//import java.util.HashMap;
 import xyz.davidchangx.algorithms.math.operator.Operator;
 import xyz.davidchangx.algorithms.math.Operand;
 import xyz.davidchangx.algorithms.math.Unknown;
@@ -29,7 +29,7 @@ import java.io.IOException;
  *
  * This class implements {@link DoubleUnaryOperator}. 
  *
- * @version 4.0
+ * @version 4.5
  * @author David Chang
  */
 public class Expression extends Operator implements DoubleUnaryOperator
@@ -38,7 +38,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	private ArrayList<ExpressionItem> sufix;
 	private double value;
 	private String x;
-	private HashMap<String,Operator> operatorMap;
+	private Map<String,Operator> operatorMap;
 	private ArrayDeque<Double> opdStack;
 	private boolean newestOrNot,setOrNot;
 	/**
@@ -48,8 +48,10 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	 * @param operatorMap the operator map
 	 * @param x the character of unknown
 	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
+	 *
+	 * @since 4.5
 	 */
-	public Expression(String infix,HashMap<String,Operator> operatorMap,String x) throws IllegalArgumentException,IOException //contribute an Expression with unknown character
+	public Expression(String infix,Map<String,Operator> operatorMap,String x) throws IllegalArgumentException,IOException //contribute an Expression with unknown character
 	{
 		this("f",15,1,infix,operatorMap,x);
 	}
@@ -59,8 +61,10 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	 * @param infix the infix expression string
 	 * @param operatorMap the operator map
 	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
+	 *
+	 * @since 4.5
 	 */
-	public Expression(String infix,HashMap<String,Operator> operatorMap) throws IllegalArgumentException,IOException //contribute an Expression without unknown character
+	public Expression(String infix,Map<String,Operator> operatorMap) throws IllegalArgumentException,IOException //contribute an Expression without unknown character
 	{
 		this(infix,operatorMap,"\0");
 	}
@@ -76,8 +80,10 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	 * @param operatorMap the operator map
 	 * @param x the character of unknown
 	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
+	 *
+	 * @since 4.5
 	 */
-	public Expression(String functionName,int inStackPriority,int outStackPriority,String infix,HashMap<String,Operator> operatorMap,String x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
+	public Expression(String functionName,int inStackPriority,int outStackPriority,String infix,Map<String,Operator> operatorMap,String x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
 	{
 		super(functionName + "(",inStackPriority,outStackPriority,1,OperatorGroupMode.NEEDING_CLOSED);
 		
@@ -90,60 +96,14 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		this.opdStack = new ArrayDeque<Double>();
 		//this.operatorMap.forEach((String oprName,Operator oprtr)->oprtr.setStack(opdStack));
 		
-		/*Scanner s = new Scanner(infix + " #"); //In operatorMap there must be the infomation about '$'(head mark) and '#'(ending mark)
-		ArrayDeque<Operator> stack = new ArrayDeque<Operator>();
-		Pattern opPat = Pattern.compile("(?:" + x + "?[a-zA-Z_]+)*\\W*"),unknownPat = Pattern.compile(String.valueOf(x));
-		Operator nextOperator,topOperator;
-		String nxtOpt;
-		stack.push(this.operatorMap.get("$"));
-		double theNum;
-		StringBuilder strSufix = new StringBuilder();
-		sufix = new ArrayList<ExpressionItem>();
-		for(;s.hasNext();)
-		{
-			if(s.hasNextDouble())
-			{
-				theNum = s.nextDouble();
-				strSufix.append(theNum + " ");
-				sufix.add(new Operand(theNum,opdStack));
-			}
-			else if(s.hasNext(unknownPat))
-			{
-				s.next(unknownPat);
-				strSufix.append(x + " ");
-				sufix.add(new Unknown(opdStack));
-			}
-			else if(s.hasNext(opPat))
-			{
-				nxtOpt = s.next(opPat);
-				nextOperator = this.operatorMap.get(nxtOpt);
-				topOperator = stack.peek();
-				for(int priority = nextOperator.getInStackPriority();topOperator.getOutStackPriority()>=priority;topOperator = stack.peek())
-				{
-					if(nxtOpt.equals("#")&&(stack.size()==1))
-						break;
-					strSufix.append(topOperator + " ");
-					sufix.add(topOperator);
-					stack.pop();
-					if(topOperator.needsClosed())
-						break;
-				}
-				if(!nextOperator.isClosing())
-					stack.push(nextOperator);
-			}
-			else
-				throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + infix);
-		}
-		this.strSufix = strSufix.substring(0,strSufix.length()-1);*/
-
 		infix += " #";
-		var stream = new StringReader(infix);
+		StringReader stream = new StringReader(infix);
 		ArrayDeque<Operator> stack = new ArrayDeque<>();
 		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),wordPat = Pattern.compile("\\w").asPredicate();
 		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),unknownPat = x::equals,opPat = str->this.operatorMap.containsKey(str);
 		Predicate<String> elePat = numPat.or(unknownPat).or(opPat);
 		Unknown unknownObj = new Unknown(opdStack);
-		var buffer = new CharArrayWriter();
+		CharArrayWriter buffer = new CharArrayWriter();
 		stack.push(new Head());
 		/*class WrappedBoolean {
 			boolean value;
@@ -260,18 +220,6 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		
 		newestOrNot = false;
 		setOrNot = false;
-	}
-	static HashMap<String,Operator> cloneMap(HashMap<String,Operator> map) //a tool method to get a deep clone of a Operator Map
-	{
-		HashMap<String,Operator> newMap = new HashMap<String,Operator>();
-		Set<Map.Entry<String,Operator>> set = map.entrySet();
-		Iterator<Map.Entry<String,Operator>> it = set.iterator();
-		for(;it.hasNext();)
-		{
-			Map.Entry<String,Operator> ele = it.next();
-			newMap.put(ele.getKey(),(Operator)ele.getValue().clone());
-		}
-		return newMap;
 	}
 	/**
 	 * Gets a clone of this object. 
@@ -415,8 +363,10 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	 * Returns the used operator map of this {@code Expression} object. 
 	 *
 	 * @return the used operator map
+	 *
+	 * @since 4.5
 	 */
-	public HashMap<String,Operator> getOperators()
+	public Map<String,Operator> getOperators()
 	{
 		return this.operatorMap;
 	}

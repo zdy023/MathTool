@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-version = 4.0.1
+version = 4.5
 
 algorithms_opt = opt/davidchangx.math/xyz/davidchangx/algorithms
 equation_opt = $(algorithms_opt)/equation
@@ -11,7 +11,7 @@ mathtool_opt = opt/davidchangx.math/xyz/davidchangx/mathtool
 
 algorithms_src = src/davidchangx.math/xyz/davidchangx/algorithms
 equation_src = $(algorithms_src)/equation
-math_src = $(algorithms_opt)/math
+math_src = $(algorithms_src)/math
 operator_src = $(math_src)/operator
 
 mathtool_src = src/davidchangx.math/xyz/davidchangx/mathtool

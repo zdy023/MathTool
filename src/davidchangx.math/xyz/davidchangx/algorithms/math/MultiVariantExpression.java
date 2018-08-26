@@ -1,7 +1,7 @@
 package xyz.davidchangx.algorithms.math;
 import java.util.ArrayDeque;
 import java.util.Scanner;
-import java.util.HashMap;
+//import java.util.HashMap;
 import xyz.davidchangx.algorithms.math.operator.Operator;
 import xyz.davidchangx.algorithms.math.Operand;
 import xyz.davidchangx.algorithms.math.Unknown;
@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * This class inherits {@link Operator} class so that a contributed {@code MultiVariantExpression} can be used as a new operator in another {@code MultiVariantExpression} or {@link Expression}. 
  *
- * @version 4.0.1
+ * @version 4.5
  * @since 3.0
  * @author David Chang
  */
@@ -42,7 +42,7 @@ public class MultiVariantExpression extends Operator
 	private double value;
 	private String[] x;
 	private Unknown[] unknowns;
-	private HashMap<String,Operator> operatorMap;
+	private Map<String,Operator> operatorMap;
 	private ArrayDeque<Double> opdStack;
 	private boolean newestOrNot,setOrNot;
 	/**
@@ -52,8 +52,11 @@ public class MultiVariantExpression extends Operator
 	 * @param operatorMap the operator map
 	 * @param x the character of unknown
 	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
+	 *
+	 * @since 4.5
 	 */
-	public MultiVariantExpression(String infix,HashMap<String,Operator> operatorMap,String... x) throws IllegalArgumentException,IOException //contribute an MultiVariantExpression with unknown character
+	@SafeVarargs
+	public MultiVariantExpression(String infix,Map<String,Operator> operatorMap,String... x) throws IllegalArgumentException,IOException //contribute an MultiVariantExpression with unknown character
 	{
 		this("f",15,1,infix,operatorMap,x);
 	}
@@ -69,8 +72,11 @@ public class MultiVariantExpression extends Operator
 	 * @param operatorMap the operator map
 	 * @param x the character of unknown
 	 * @throws IllegalArgumentException if the infix cannot be correctly scanned.
+	 *
+	 * @since 4.5
 	 */
-	public MultiVariantExpression(String functionName,int inStackPriority,int outStackPriority,String infix,HashMap<String,Operator> operatorMap,String... x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
+	@SafeVarargs
+	public MultiVariantExpression(String functionName,int inStackPriority,int outStackPriority,String infix,Map<String,Operator> operatorMap,String... x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
 	{
 		super(functionName + "(",inStackPriority,outStackPriority,x.length,OperatorGroupMode.NEEDING_CLOSED);
 		
@@ -83,60 +89,8 @@ public class MultiVariantExpression extends Operator
 		this.opdStack = new ArrayDeque<Double>(); //the operand stack
 		//this.operatorMap.forEach((String oprName,Operator oprtr)->oprtr.setStack(opdStack));
 		
-		/*Scanner s = new Scanner(infix + " #"); //In operatorMap there must be the infomation about '$'(head mark) and '#'(ending mark)
-		ArrayDeque<Operator> stack = new ArrayDeque<Operator>(); //the operator stack
-		Pattern opPat = Pattern.compile("(?:[" + String.valueOf(x) + "]?[a-zA-Z_]+)*\\W*"),unknownPat = Pattern.compile(String.valueOf(x));
-		ToIntBiFunction<char[],Character> indexOf = (array,symbol)->{
-			int i = 0;
-			for(;array[i]!=symbol;i++) ;
-			return i;
-		};
-		Operator nextOperator,topOperator;
-		String nxtOpt;
-		stack.push(this.operatorMap.get("$"));
-		double theNum;
-		StringBuilder strSufix = new StringBuilder();
-		sufix = new ArrayList<ExpressionItem>();
-		for(;s.hasNext();)
-		{
-			if(s.hasNextDouble())
-			{
-				theNum = s.nextDouble();
-				strSufix.append(theNum + " ");
-				sufix.add(new Operand(theNum,opdStack));
-			}
-			else if(s.hasNext(unknownPat))
-			{
-				nxtOpt = s.next(unknownPat);
-				strSufix.append(nxtOpt + " ");
-				sufix.add(unknowns[indexOf.applyAsInt(x,nxtOpt.charAt(0))]);
-			}
-			else if(s.hasNext(opPat))
-			{
-				nxtOpt = s.next(opPat);
-				nextOperator = this.operatorMap.get(nxtOpt);
-				topOperator = stack.peek();
-				for(int priority = nextOperator.getInStackPriority();topOperator.getOutStackPriority()>=priority;topOperator = stack.peek())
-				{
-					if(nxtOpt.equals("#")&&(stack.size()==1))
-						break;
-					strSufix.append(topOperator + " ");
-					sufix.add(topOperator);
-					stack.pop();
-					if(topOperator.needsClosed())
-						break;
-				}
-				if(!nextOperator.isClosing())
-					stack.push(nextOperator);
-			}
-			else
-				throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + infix);
-		}
-		this.strSufix = strSufix.substring(0,strSufix.length()-1);*/
-
-
 		infix += " #";
-		var stream = new StringReader(infix);
+		StringReader stream = new StringReader(infix);
 		ArrayDeque<Operator> stack = new ArrayDeque<>();
 		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),wordPat = Pattern.compile("\\w").asPredicate();
 		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),unknownPat = str->Arrays.stream(x).anyMatch(un->str.equals(un)),opPat = str->this.operatorMap.containsKey(str);
@@ -147,7 +101,7 @@ public class MultiVariantExpression extends Operator
 			for(;i<array.length&&!array[i].equals(symbol);i++) ;
 			return i==array.length?-1:i;
 		};
-		var buffer = new CharArrayWriter();
+		CharArrayWriter buffer = new CharArrayWriter();
 		stack.push(new Head());
 		StringBuilder strSuffix = new StringBuilder();
 		sufix = new ArrayList<>();
@@ -344,8 +298,10 @@ public class MultiVariantExpression extends Operator
 	 * Returns the used operator map of this {@code MultiVariantExpression} object. 
 	 *
 	 * @return the used operator map
+	 *
+	 * @since 4.5
 	 */
-	public HashMap<String,Operator> getOperators()
+	public Map<String,Operator> getOperators()
 	{
 		return this.operatorMap;
 	}

@@ -127,6 +127,7 @@ public abstract class Operator implements ExpressionItem,Cloneable
 	 * @param x useless for {@code Operator} object
 	 */
 	@Override
+	@SafeVarargs
 	public final void execute(double... x) //inherits from ExpressionItem, used in Expression
 	{
 		/*if(operandCount==0&&groupMode!=OperatorGroupMode.SINGLE)
