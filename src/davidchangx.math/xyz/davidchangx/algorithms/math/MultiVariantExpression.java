@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * This class inherits {@link Operator} class so that a contributed {@code MultiVariantExpression} can be used as a new operator in another {@code MultiVariantExpression} or {@link Expression}. 
  *
- * @version 4.5
+ * @version 4.5.1
  * @since 3.0
  * @author David Chang
  */
@@ -96,7 +96,7 @@ public class MultiVariantExpression extends Operator
 		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),unknownPat = str->Arrays.stream(x).anyMatch(un->str.equals(un)),opPat = str->this.operatorMap.containsKey(str);
 		Predicate<String> elePat = numPat.or(unknownPat).or(opPat);
 		this.unknowns = Stream.<Unknown>iterate(new Unknown(opdStack,0),unknown->unknown.getId()<x.length,unknown->new Unknown(opdStack,unknown.getId()+1)).toArray(Unknown[]::new);
-		ToIntBiFunction<String[],Character> indexOf = (array,symbol)->{
+		ToIntBiFunction<String[],String> indexOf = (array,symbol)->{
 			int i = 0;
 			for(;i<array.length&&!array[i].equals(symbol);i++) ;
 			return i==array.length?-1:i;
@@ -122,7 +122,7 @@ public class MultiVariantExpression extends Operator
 				{
 					//System.out.println("node b: " + str);
 					strSuffix.append(str + " ");
-					sufix.add(unknowns[indexOf.applyAsInt(x,str.charAt(0))]);
+					sufix.add(unknowns[indexOf.applyAsInt(x,str)]);
 					buff.reset();
 					return true;
 				}
