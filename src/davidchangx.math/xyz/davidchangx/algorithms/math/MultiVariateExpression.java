@@ -92,10 +92,16 @@ public class MultiVariateExpression extends Operator
 		infix += " #";
 		StringReader stream = new StringReader(infix);
 		ArrayDeque<Operator> stack = new ArrayDeque<>();
-		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),wordPat = Pattern.compile("\\w").asPredicate();
-		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),unknownPat = str->Arrays.stream(x).anyMatch(un->str.equals(un)),opPat = str->this.operatorMap.containsKey(str);
+		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),
+			wordPat = Pattern.compile("\\w").asPredicate();
+		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),
+			unknownPat = str->Arrays.stream(x).anyMatch(un->str.equals(un)),
+			opPat = str->this.operatorMap.containsKey(str);
 		Predicate<String> elePat = numPat.or(unknownPat).or(opPat);
-		this.unknowns = Stream.<Unknown>iterate(new Unknown(opdStack,0),unknown->unknown.getId()<x.length,unknown->new Unknown(opdStack,unknown.getId()+1)).toArray(Unknown[]::new);
+		this.unknowns = Stream.<Unknown>iterate(new Unknown(opdStack,0),
+				unknown->unknown.getId()<x.length,
+				unknown->new Unknown(opdStack,unknown.getId()+1))
+			.toArray(Unknown[]::new);
 		ToIntBiFunction<String[],String> indexOf = (array,symbol)->{
 			int i = 0;
 			for(;i<array.length&&!array[i].equals(symbol);i++) ;
@@ -304,5 +310,16 @@ public class MultiVariateExpression extends Operator
 	public Map<String,Operator> getOperators()
 	{
 		return this.operatorMap;
+	}
+	/**
+	 * Returns the count of unknown symbols. 
+	 *
+	 * @return the count of unknown symbols
+	 *
+	 * @since 5.0
+	 */
+	public int getUnknownCount()
+	{
+		return this.x.length;
 	}
 }
