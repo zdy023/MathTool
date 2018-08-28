@@ -27,15 +27,15 @@ import java.io.IOException;
 /**
  * Suffix expression constructed from an infix expression.
  *
- * To contruct an {@code MultiVariantExpression} you need an infix expression String and a dictionary of {@link Operator}. To simplize the construction of operator map, we provide {@code xyz.davidchangx.mathtool.OperatorMapGenerator} to generate operator map conveniently. You can use the operators provided in package {@code xyz.davidchangx.algorithms.math.operator}, and also you can contribute your own operators by inherit class {@link Operator}. 
+ * To contruct an {@code MultiVariateExpression} you need an infix expression String and a dictionary of {@link Operator}. To simplize the construction of operator map, we provide {@code xyz.davidchangx.mathtool.OperatorMapGenerator} to generate operator map conveniently. You can use the operators provided in package {@code xyz.davidchangx.algorithms.math.operator}, and also you can contribute your own operators by inherit class {@link Operator}. 
  *
- * This class inherits {@link Operator} class so that a contributed {@code MultiVariantExpression} can be used as a new operator in another {@code MultiVariantExpression} or {@link Expression}. 
+ * This class inherits {@link Operator} class so that a contributed {@code MultiVariateExpression} can be used as a new operator in another {@code MultiVariateExpression} or {@link Expression}. 
  *
- * @version 4.5.1
+ * @version 5.0
  * @since 3.0
  * @author David Chang
  */
-public class MultiVariantExpression extends Operator
+public class MultiVariateExpression extends Operator
 {
 	private String strSufix,infix;
 	private ArrayList<ExpressionItem> sufix;
@@ -46,7 +46,7 @@ public class MultiVariantExpression extends Operator
 	private ArrayDeque<Double> opdStack;
 	private boolean newestOrNot,setOrNot;
 	/**
-	 * Constructs an {@code MultiVariantExpression} object with unknown from an infix string, an operator map and the character of unknown. 
+	 * Constructs an {@code MultiVariateExpression} object with unknown from an infix string, an operator map and the character of unknown. 
 	 *
 	 * @param infix the infix expression string
 	 * @param operatorMap the operator map
@@ -56,12 +56,12 @@ public class MultiVariantExpression extends Operator
 	 * @since 4.5
 	 */
 	@SafeVarargs
-	public MultiVariantExpression(String infix,Map<String,Operator> operatorMap,String... x) throws IllegalArgumentException,IOException //contribute an MultiVariantExpression with unknown character
+	public MultiVariateExpression(String infix,Map<String,Operator> operatorMap,String... x) throws IllegalArgumentException,IOException //contribute an MultiVariateExpression with unknown character
 	{
 		this("f",15,1,infix,operatorMap,x);
 	}
 	/**
-	 * Constructs an {@code MultiVariantExpression} object from given function name, in-stack and out-stack priority, infix string, an operator map and the character of unknown. 
+	 * Constructs an {@code MultiVariateExpression} object from given function name, in-stack and out-stack priority, infix string, an operator map and the character of unknown. 
 	 *
 	 * The returned object can be used as a new {@link Operator}, string format of which is {@code functionName}, group mode of which is {@code OperatorGroupMode.NEEDING_CLOSED}, operand count of which is the count of the unknowns. 
 	 *
@@ -76,7 +76,7 @@ public class MultiVariantExpression extends Operator
 	 * @since 4.5
 	 */
 	@SafeVarargs
-	public MultiVariantExpression(String functionName,int inStackPriority,int outStackPriority,String infix,Map<String,Operator> operatorMap,String... x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
+	public MultiVariateExpression(String functionName,int inStackPriority,int outStackPriority,String infix,Map<String,Operator> operatorMap,String... x) throws IllegalArgumentException,IOException //contribute an Expression with detailed customized operator attributes, the new Expression would be used as a new Operator
 	{
 		super(functionName + "(",inStackPriority,outStackPriority,x.length,OperatorGroupMode.NEEDING_CLOSED);
 		
@@ -134,7 +134,7 @@ public class MultiVariantExpression extends Operator
 						{
 							String realOpStr = str.substring(0,n);
 							//System.out.println("node c: " + realOpStr);
-							Operator nextOperator = MultiVariantExpression.this.operatorMap.get(realOpStr);
+							Operator nextOperator = MultiVariateExpression.this.operatorMap.get(realOpStr);
 							Operator topOperator = stack.peek();
 							for(int priority = nextOperator.getInStackPriority();topOperator.getOutStackPriority()>=priority;topOperator = stack.peek())
 							{
@@ -142,7 +142,7 @@ public class MultiVariantExpression extends Operator
 									break;
 								strSuffix.append(topOperator + " ");
 								Operator topClone = (Operator)topOperator.clone();
-								topClone.setStack(MultiVariantExpression.this.opdStack);
+								topClone.setStack(MultiVariateExpression.this.opdStack);
 								sufix.add(topClone);
 								stack.pop();
 								if(topOperator.needsClosed())
@@ -215,7 +215,7 @@ public class MultiVariantExpression extends Operator
 	{
 		try
 		{
-			return new MultiVariantExpression(this.operator.substring(0,this.operator.length()-1),this.inStackPriority,this.outStackPriority,this.infix,this.operatorMap,this.x);
+			return new MultiVariateExpression(this.operator.substring(0,this.operator.length()-1),this.inStackPriority,this.outStackPriority,this.infix,this.operatorMap,this.x);
 		}
 		catch(IOException e)
 		{
@@ -295,7 +295,7 @@ public class MultiVariantExpression extends Operator
 		return this.sufix;
 	}
 	/**
-	 * Returns the used operator map of this {@code MultiVariantExpression} object. 
+	 * Returns the used operator map of this {@code MultiVariateExpression} object. 
 	 *
 	 * @return the used operator map
 	 *

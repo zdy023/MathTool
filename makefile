@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-version = 4.5.1
+version = 5.0
 
 algorithms_opt = opt/davidchangx.math/xyz/davidchangx/algorithms
 equation_opt = $(algorithms_opt)/equation
@@ -23,7 +23,7 @@ java = java -p opt -m davidchangx.math
 
 .PHONY: all expression mathtool operator equation plottor regression operatortool
 all: expression mathtool operator
-expression: $(math_opt)/Expression.class $(mathtool_opt)/OperatorMapGenerator.class $(math_opt)/MultiVariantExpression.class
+expression: $(math_opt)/Expression.class $(mathtool_opt)/OperatorMapGenerator.class $(math_opt)/MultiVariateExpression.class
 mathtool: equation plottor regression
 equation: $(mathtool_opt)/SolveEquation.class expression operator
 plottor: $(mathtool_opt)/FunctionDrawer.class expression operator
@@ -56,7 +56,7 @@ $(operator_opt)/Operator.class: $(math_opt)/ExpressionItem.class $(operator_opt)
 
 # module expression
 
-$(math_opt)/Expression.class $(math_opt)/MultiVariantExpression.class: $(math_opt)/ExpressionItem.class $(operator_opt)/Operator.class $(math_opt)/Operand.class $(math_opt)/Unknown.class $(operator_opt)/Head.class $(operator_opt)/Tail.class
+$(math_opt)/Expression.class $(math_opt)/MultiVariateExpression.class: $(math_opt)/ExpressionItem.class $(operator_opt)/Operator.class $(math_opt)/Operand.class $(math_opt)/Unknown.class $(operator_opt)/Head.class $(operator_opt)/Tail.class
 $(operator_opt)/Head.class $(operator_opt)/Tail.class: $(operator_opt)/Operator.class
 $(math_opt)/Operand.class $(mathtool_opt)/Unknown.class: $(math_opt)/ExpressionItem.class
 

@@ -36,11 +36,11 @@ DoubleStream.iterate(0,x->x<=20,x->x+1).map(exp).forEach(x->{System.out.print(x 
 System.out.println();
 ```
 
-We provide `MultiVariantExpression` to support a multivariant function as well. The interfaces of `MultiVariantExpression` is greatly similar to these of `Expression`. However, `MultiVariantExpression` cannot be used as an instance of `DoubleUnaryOperator`. Here is a simple example of `MultiVariantExpression`: 
+We provide `MultiVariateExpression` to support a multivariant function as well. The interfaces of `MultiVariateExpression` is greatly similar to these of `Expression`. However, `MultiVariateExpression` cannot be used as an instance of `DoubleUnaryOperator`. Here is a simple example of `MultiVariateExpression`: 
 
 ```java
 var operatorMap = OperatorMapGenerator.getOperatorMapByGroupPattern(new File("operators.lst"),"basic|trigonometric"); //generate operator map
-var exp = new MultiVariantExpression("3*sin(2*x+4)-5*cos(y-3)",operatorMap,"x","y"); construct an instance of MultiVariantExpression
+var exp = new MultiVariateExpression("3*sin(2*x+4)-5*cos(y-3)",operatorMap,"x","y"); construct an instance of MultiVariateExpression
 exp.calculate(3,4); //calculate the value
 System.out.println(exp.getValue());
 ```
