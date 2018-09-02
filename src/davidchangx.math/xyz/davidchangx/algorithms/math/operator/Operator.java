@@ -7,14 +7,13 @@ import xyz.davidchangx.algorithms.math.Expression;
 /**
  * Abstract super-class of all available operators.
  *
- * @version 3.0
+ * @version 6.0
  * @author David Chang
  */
-public abstract class Operator implements ExpressionItem,Cloneable
+public abstract class Operator extends ExpressionItem
 {
 	protected final String operator;
 	protected final int inStackPriority,outStackPriority; //priority to decide the order of pushing and poping, should be in [0,15)
-	protected ArrayDeque<Double> stack;
 	protected final int hash;
 	protected final OperatorGroupMode groupMode;
 	protected final int operandCount;
@@ -61,22 +60,14 @@ public abstract class Operator implements ExpressionItem,Cloneable
 	@Override
 	public abstract Object clone();
 	/**
-	 * Set an operand stack for this operator object. This is used for calculate the value of a suffix expression in {@link Expression}. 
+	 * Return operand count. 
 	 *
-	 * @param stack the operand stack
+	 * @return operand count
+	 * @since 6.0
 	 */
-	public final void setStack(ArrayDeque<Double> stack) //when the operator is used to solve a suffix expression, a stack of double is in need
+	public int getOperandCount()
 	{
-		this.stack = stack;
-	}
-	/**
-	 * Get the double stack. 
-	 *
-	 * @return the stack of double
-	 */
-	public final ArrayDeque<Double> getStack()
-	{
-		return this.stack;
+		return this.operandCount;
 	}
 	/**
 	 * Get the in-stack priority of this operator. 

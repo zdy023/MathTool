@@ -5,13 +5,12 @@ import java.util.ArrayDeque;
 /**
  * Unknown character in Expression.
  *
- * @version 3.0
+ * @version 6.0
  * @author David Chang
  */
-class Unknown implements ExpressionItem
+class Unknown extends ExpressionItem
 {
-	private ArrayDeque<Double> stack;
-	private int id;
+	private final int id;
 	/**
 	 * Constructs an {@code Unknown} object with an operand stack. 
 	 *
@@ -44,24 +43,6 @@ class Unknown implements ExpressionItem
 		stack.push(x[this.id]);
 	}
 	/**
-	 * Change an operand stack. 
-	 *
-	 * @param stack an operand stack
-	 */
-	public void setStack(ArrayDeque<Double> stack)
-	{
-		this.stack = stack;
-	}
-	/**
-	 * Returns the operand stack. 
-	 *
-	 * @return the operand stack
-	 */
-	public ArrayDeque<Double> getStack()
-	{
-		return this.stack;
-	}
-	/**
 	 * Returns the id of this unknown. 
 	 *
 	 * @since 3.0
@@ -70,5 +51,16 @@ class Unknown implements ExpressionItem
 	public int getId()
 	{
 		return this.id;
+	}
+	/**
+	 * Creates a clone for this unknown object. 
+	 * 
+	 * @return a clone of this object
+	 * @since 6.0
+	 */
+	@Override
+	public Object clone()
+	{
+		return new Unknown(null,id);
 	}
 }

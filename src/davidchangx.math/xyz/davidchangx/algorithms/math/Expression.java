@@ -29,16 +29,15 @@ import java.io.IOException;
  *
  * This class implements {@link DoubleUnaryOperator}. 
  *
- * @version 4.5
+ * @version 6.0
  * @author David Chang
  */
 public class Expression extends Operator implements DoubleUnaryOperator
 {
-	private String strSufix,infix;
+	private String strSufix;
 	private ArrayList<ExpressionItem> sufix;
-	private double value;
-	private String x;
-	private Map<String,Operator> operatorMap;
+	private volatile double value;
+	private Map<String,Operator> operatorMap; //stores just a reference
 	private ArrayDeque<Double> opdStack;
 	private boolean newestOrNot,setOrNot;
 	/**
@@ -87,15 +86,12 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	{
 		super(functionName + "(",inStackPriority,outStackPriority,1,OperatorGroupMode.NEEDING_CLOSED);
 		
-		this.infix = infix;
-		this.x = x;
-		//this.operatorMap = cloneMap(operatorMap);
 		this.operatorMap = operatorMap;
 		this.operatorMap.put("$",new Head());
 		this.operatorMap.put("#",new Tail());
 		this.opdStack = new ArrayDeque<Double>();
-		//this.operatorMap.forEach((String oprName,Operator oprtr)->oprtr.setStack(opdStack));
 		
+		infix.trim();
 		infix += " #";
 		StringReader stream = new StringReader(infix);
 		ArrayDeque<Operator> stack = new ArrayDeque<>();
@@ -108,14 +104,6 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		Unknown unknownObj = new Unknown(opdStack);
 		CharArrayWriter buffer = new CharArrayWriter();
 		stack.push(new Head());
-		/*class WrappedBoolean {
-			boolean value;
-			WrappedBoolean()
-			{
-				this.value = false;
-			}
-		}
-		WrappedBoolean headOfBlockOrNot = new WrappedBoolean();*/
 		StringBuilder strSuffix = new StringBuilder();
 		sufix = new ArrayList<>();
 		Predicate<CharArrayWriter> eleHandle = new Predicate<>(){
@@ -188,7 +176,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 			{
 				//System.out.println("node 1: " + buffer + "," + newChar);
 				if(!eleHandle.test(buffer))
-					throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + this.infix);
+					throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + infix.substring(0,infix.length()-2));
 			}
 			else if(wordPat.test(newChar))
 			{
@@ -216,13 +204,17 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		if(!eleHandle.test(buffer))
 		{
 			//System.out.println("node 4");
-			throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + this.infix);
+			throw new IllegalArgumentException("The infix string cannot be scanned correctly, maybe you should check your orthography of operators and unknown or check if you have separate neighboring operands and operators by whitespace characters. The inputed expression is: \n\t" + infix.substring(0,infix.length()-2));
 		}
 		this.strSufix = strSuffix.toString().trim();
 		//System.out.println("node 5: " + strSufix);
 		
 		newestOrNot = false;
 		setOrNot = false;
+	}
+	private Expression(String functionName,int inStackPriority,int outStackPriority) //create a empty Expression object, used in clone()
+	{
+		super(functionName,inStackPriority,outStackPriority,1,OperatorGroupMode.NEEDING_CLOSED);
 	}
 	/**
 	 * Gets a clone of this object. 
@@ -232,15 +224,15 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	@Override
 	public Object clone()
 	{
-		try
-		{
-			return new Expression(this.operator.substring(0,this.operator.length()-1),this.inStackPriority,this.outStackPriority,this.infix,this.operatorMap,this.x);
-		}
-		catch(IOException e) {}
-		finally
-		{
-			return null;
-		}
+		Expression expression = new Expression(super.operator,super.inStackPriority,super.outStackPriority);
+		expression.strSufix = this.strSufix;
+		expression.sufix = new ArrayList<>();
+		this.sufix.stream().parallel().forEach(item->expression.sufix.add((ExpressionItem)item.clone()));
+		expression.operatorMap = this.operatorMap;
+		expression.opdStack = new ArrayDeque<>();
+		expression.sufix.stream().parallel().forEach(item->item.setStack(expression.opdStack));
+		expression.newestOrNot = expression.setOrNot = false;
+		return expression;
 	}
 	/**
 	 * Use {@link calculate(double)} intead this method. 
@@ -273,24 +265,27 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	/**
 	 * Solves the value of the {@code Expression} object. This method returns nothing. The result of calculation should be obtained by invoking {@link getValue()}. 
 	 *
-	 * @since 3.0
 	 * @param k the value of unknown
+	 * @return this object
+	 * @since 6.0
 	 */
-	public void calculate(double k) //solve the value of the Expression, use k as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
+	public Expression calculate(double k) //solve the value of the Expression, use k as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
 	{
 		double[] x = {k};
 		value = this.solve(x);
 		setOrNot = true;
 		newestOrNot = true;
+		return this;
 	}
 	/**
 	 * Solves the value of the {@code Expression} object. This method returns nothing. The result of calculation should be obtained by invoking {@link getValue()}. 
 	 *
-	 * @since 3.0
+	 * @return this object
+	 * @since 6.0
 	 */
-	public void calculate() //solve the value of the Expression, use 0 as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
+	public Expression calculate() //solve the value of the Expression, use 0 as the value of unknown character if there is one, the solved value should be obtained by invoking getValue()
 	{
-		this.calculate(0);
+		return this.calculate(0);
 	}
 	/**
 	 * Calculate as a math operator. 
@@ -300,11 +295,14 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	@Override
 	public double solve(double[] x) //this method will not update the expression value, you can't use getValue() to get the result of this method
 	{
-		opdStack.clear();
-		ListIterator<ExpressionItem> it = sufix.listIterator();
-		for(;it.hasNext();)
-			it.next().execute(x[0]);
-		return opdStack.pop();
+		double value;
+		synchronized(sufix)
+		{
+			opdStack.clear();
+			sufix.stream().forEach(item->item.execute(x[0]));
+			value = opdStack.pop();
+		}
+		return value;
 	}
 	/**
 	 * Solves and update the expression value and returns it immediately. 
@@ -356,11 +354,15 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	/**
 	 * Returns the suffix expression in format {@code ArrayList<ExpressionItem>}. 
 	 *
+	 * This method in versions that are earlier than 6.0 is dangerous for it simply returns the reference of the internal @{code ArrayList}. In the new version, this method will create a deep clone of the internal @{code ArrayList} and return it. 
+	 *
 	 * @return the suffix expression in format {@code ArrayList<ExpressionItem>}
 	 */
 	protected ArrayList<ExpressionItem> getArraySuffix()
 	{
-		return this.sufix;
+		ArrayList<ExpressionItem> newSuffix = new ArrayList<>();
+		this.sufix.stream().parallel().forEach(item->newSuffix.add((ExpressionItem)item.clone()));
+		return newSuffix;
 	}
 	/**
 	 * Returns the used operator map of this {@code Expression} object. 

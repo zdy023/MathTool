@@ -6,13 +6,12 @@ import xyz.davidchangx.algorithms.math.Expression;
 /**
  * The operand in Expression.
  *
- * @version 3.0
+ * @version 6.0
  * @author David Chang
  */
-class Operand implements ExpressionItem,Comparable<Operand>
+class Operand extends ExpressionItem implements Comparable<Operand>
 {
-	private double value;
-	private ArrayDeque<Double> stack;
+	private final double value;
 	/**
 	 * Construct an {@code Operand} object. 
 	 *
@@ -35,32 +34,15 @@ class Operand implements ExpressionItem,Comparable<Operand>
 		stack.push(value);
 	}
 	/**
-	 * Change an operand stack. 
+	 * Actually, this class has been modified to an immutable type. 
 	 *
-	 * @param stack the operand stack
-	 */
-	public void setStack(ArrayDeque<Double> stack)
-	{
-		this.stack = stack;
-	}
-	/**
-	 * Get the operand stack.
-	 *
-	 * @return the operand stack
-	 */
-	public ArrayDeque<Double> getStack()
-	{
-		return this.stack;
-	}
-	/**
 	 * Modify the value of this operand object. 
 	 *
+	 * @deprecated
 	 * @param value the new value of this object
 	 */
-	public void setValue(double value)
-	{
-		this.value = value;
-	}
+	@Deprecated
+	public void setValue(double value) {}
 	/**
 	 * Returns the value of this operand object. 
 	 *
@@ -111,5 +93,16 @@ class Operand implements ExpressionItem,Comparable<Operand>
 		if(x instanceof Operand)
 			return value==((Operand)x).getValue();
 		return false;
+	}
+	/**
+	 * Creates a clone for this {@code Operand} object. 
+	 *
+	 * @return a clone of this object
+	 * @since 6.0
+	 */
+	@Override
+	public Object clone()
+	{
+		return new Operand(this.value,null);
 	}
 }

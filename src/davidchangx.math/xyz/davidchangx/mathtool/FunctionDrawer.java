@@ -20,10 +20,13 @@ import xyz.davidchangx.mathtool.OperatorMapGenerator;
 import java.io.IOException;
 import java.awt.Toolkit;
 import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
 /**
  * Simple application to draw the plot of a function.
  *
- * @version 3.6.1
+ * All method considers up as the positive direction of y-axis except static render method. 
+ *
+ * @version 6.0
  * @author David Chang
  */
 public class FunctionDrawer extends JFrame
@@ -90,45 +93,10 @@ public class FunctionDrawer extends JFrame
 	{
 		//super.paint(g);
 		Graphics2D g2 = (Graphics2D)g;
-		double mx = this.getWidth()/2.,my = this.getHeight()/2.;
-		g2.translate((int)(mx-xCenter*xScale),(int)(my+yCenter*yScale));
-		g2.setStroke(new BasicStroke(5f,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-		//Ellipse2D.Double cirle = new Ellipse2D.Double(mx-10.,my-10.,mx+10.,my+10.);
-		//Ellipse2D.Double cirle = new Ellipse2D.Double(-10.,-10.,10.,10.);
-		//g2.draw(cirle);
-		double xi,yi,x0,y0,x1,y1;
-		xi = xCenter;
-		yi = -function.applyAsDouble(xi)*yScale;
-		double pdx = dx*xScale;
-		double pxi = xi*xScale,px0,px1;
-		x0 = xi;
-		y0 = yi;
-		px0 = pxi;
-		double max = pxi+mx,mix = pxi-mx;
-		//double xScale = 5.,yScale = 5.;
-		for(x1 = x0+dx,px1 = px0+pdx;px1<=max;x1 += dx,px1 += pdx)
-		{
-			y1 = -function.applyAsDouble(x1)*yScale;
-			//Line2D.Double line = Line2D.new Double(x0,y0,x1,y1);
-			Line2D.Double line = new Line2D.Double(px0,y0,px1,y1);
-			g2.draw(line);
-			x0 = x1;
-			y0 = y1;
-			px0 = px1;
-		}
-		x0 = xi;
-		y0 = yi;
-		px0 = pxi;
-		for(x1 = x0-dx,px1 = px0-pdx;px1>=mix;x1 -= dx,px1 -= pdx)
-		{
-			y1 = -function.applyAsDouble(x1)*yScale;
-			//Line2D.Double line = Line2D.new Double(x0,y0,x1,y1);
-			Line2D.Double line = new Line2D.Double(px0,y0,px1,y1);
-			g2.draw(line);
-			x0 = x1;
-			y0 = y1;
-			px0 = px1;
-		}
+		AffineTransform originalTrans = g2.getTransform();
+		g2.transform(new AffineTransform(1.,0.,0.,1.,0.,0.));
+		render(g2,this.function,this.getWidth(),this.getHeight(),this.xCenter,this.yCenter,this.xScale,this.yScale,this.dx);
+		g2.setTransform(originalTrans);
 	}
 	/**
 	 * Clear the frame and render the new function. 
@@ -141,7 +109,7 @@ public class FunctionDrawer extends JFrame
 	{
 		this.function = function;
 		Graphics g = this.getGraphics();
-		g.translate((int)(xCenter*xScale-this.getWidth()/2.),(int)(-(this.getHeight()/2.+yCenter*yScale)));
+		//g.translate((int)(xCenter*xScale-this.getWidth()/2.),(int)(-(this.getHeight()/2.+yCenter*yScale)));
 		g.clipRect(0,0,this.getWidth(),this.getHeight());
 		this.paint(g);
 	}
@@ -156,8 +124,62 @@ public class FunctionDrawer extends JFrame
 	{
 		this.function = function;
 		Graphics g = this.getGraphics();
-		g.translate((int)(xCenter*xScale-this.getWidth()/2.),(int)(-(this.getHeight()/2.+yCenter*yScale)));
+		//g.translate((int)(xCenter*xScale-this.getWidth()/2.),(int)(-(this.getHeight()/2.+yCenter*yScale)));
 		this.paint(g);
+	}
+	/**
+	 * A static method to render a function in a given graphics context. 
+	 *
+	 * Defaultly, this method keeps the original positive direction of y-axix, this is <em>up</em> in most coordinate systems. 
+	 *
+	 * @param g the target graph context
+	 * @param function the function graph of which is to be rendered
+	 * @param width the width of area to render the function graph
+	 * @param height the height of area to render the function graph
+	 * @param xCenter the horizontal coordinate of the center point of the the area to render the function graph
+	 * @param yCenter the vertical coordinate of the center point of the the area to render the function graph
+	 * @param xScale the horizontal scale
+	 * @param yScale the vertical scale
+	 * @param dx the horizontal step
+	 * @since 6.0
+	 */
+	public final static void render(Graphics2D g,DoubleUnaryOperator function,int width,int height,double xCenter,double yCenter,double xScale,double yScale,double dx) //static method to render a function; by default, consider down as the positive direction of y-axis in most coordinate systems
+	{
+		double mx = width/2.,my = height/2.;
+		final int transX = (int)(mx-xCenter*xScale),transY = (int)(my-yCenter*yScale); //if we want consider up as the positive direction of y-axis, which is opposite in most of computer coodinate systems, we use "+", or we use "-"
+		g.translate(transX,transY);
+		g.setStroke(new BasicStroke(5f,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		double xi,yi,x0,y0,x1,y1;
+		xi = xCenter;
+		yi = function.applyAsDouble(xi)*yScale;
+		double pdx = dx*xScale;
+		double pxi = xi*xScale,px0,px1;
+		x0 = xi;
+		y0 = yi;
+		px0 = pxi;
+		double max = pxi+mx,mix = pxi-mx;
+		for(x1 = x0+dx,px1 = px0+pdx;px1<=max;x1 += dx,px1 += pdx)
+		{
+			y1 = function.applyAsDouble(x1)*yScale;
+			Line2D.Double line = new Line2D.Double(px0,y0,px1,y1);
+			g.draw(line);
+			x0 = x1;
+			y0 = y1;
+			px0 = px1;
+		}
+		x0 = xi;
+		y0 = yi;
+		px0 = pxi;
+		for(x1 = x0-dx,px1 = px0-pdx;px1>=mix;x1 -= dx,px1 -= pdx)
+		{
+			y1 = function.applyAsDouble(x1)*yScale;
+			Line2D.Double line = new Line2D.Double(px0,y0,px1,y1);
+			g.draw(line);
+			x0 = x1;
+			y0 = y1;
+			px0 = px1;
+		}
+		g.translate(-transX,-transY);
 	}
 	/**
 	 * A simple executable to draw a function graph. 

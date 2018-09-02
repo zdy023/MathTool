@@ -4,13 +4,13 @@
 
 This library provides a Java module containing several simple math APIs: `expression`, `equation`, `regression` and `plottor`. 
 
-`expression` is an API to provide a conveniet way to convert a math expression in String to a computable model. `equation` is an API to solve the zero point of a function using "secant method". `regression` is an API to solve problem of simple linear regression. `plottor` is an API to draw the graph of a function. 
+`expression` is an API to provide a convenient way to convert a math expression in String to a computable model. `equation` is an API to solve the zero point of a function using "secant method". `regression` is an API to solve problem of simple linear regression. `plottor` is an API to draw the graph of a function. 
 
 ## API `expression`
 
 To simply use this API you may need class `Expression` and `OperatorMapGenerator`. You may use `OperatorMapGenerator` to generate a `HashMap` with structure `<String,Operator>` needed by class Expression and use `Expression` to construct a computable math expression model. 
 
-As the current API cannot correctly process negative number with negative sign ("-"), please always use the negative operator in used operator set instead of writing negative sign straightly in front of a number, aka. please write "-(3)" instead of writing "-3" if you're using the default operator set provided by us. 
+As the current API cannot correctly process negative number with negative sign ("-"), please always use the negative operator in used operator set instead of writing negative sign straightly in front of a number, aka. Please write "-(3)" instead of writing "-3" if you're using the default operator set provided by us. 
 
 Here is an example: 
 
@@ -21,7 +21,7 @@ exp.calculate(); //calculate the value
 System.out.println(exp.getValue());
 ```
 
- Class `Expression` always tries to parse the longest substring from start of a string consisting of neiboring punctuations as an operator. Sometimes several operators may confuse with each other, for example "|(" (`AbsoluteLeft`), "|" (`Or`), "(" (`LeftBracket`) may confuse. Remember to insert whitespace at proper position to avoid confusing and wrong parsing. 
+ Class `Expression` always tries to parse the longest substring from start of a string consisting of neighbouring punctuations as an operator. Sometimes several operators may confuse with each other, for example "|(" (`AbsoluteLeft`), "|" (`Or`), "(" (`LeftBracket`) may confuse. Remember to insert white space at proper position to avoid confusing and wrong parsing. 
 
  About the usage of `OperatorMapGenerator`, refer to [About `OperatorMapGenerator`]. 
 
@@ -36,7 +36,7 @@ DoubleStream.iterate(0,x->x<=20,x->x+1).map(exp).forEach(x->{System.out.print(x 
 System.out.println();
 ```
 
-We provide `MultiVariateExpression` to support a multivariant function as well. The interfaces of `MultiVariateExpression` is greatly similar to these of `Expression`. However, `MultiVariateExpression` cannot be used as an instance of `DoubleUnaryOperator`. Here is a simple example of `MultiVariateExpression`: 
+We provide `MultiVariateExpression` to support a multivariate function as well. The interfaces of `MultiVariateExpression` is greatly similar to these of `Expression`. However, `MultiVariateExpression` cannot be used as an instance of `DoubleUnaryOperator`. Here is a simple example of `MultiVariateExpression`: 
 
 ```java
 var operatorMap = OperatorMapGenerator.getOperatorMapByGroupPattern(new File("operators.lst"),"basic|trigonometric"); //generate operator map
@@ -109,11 +109,11 @@ To use `OperatorMapGenerator` you need to provide an operator list in such a for
 1. The first column should be the string format of the operator. 
 2. The second column should be the complete format of the class name. 
 3. The third column is optional to provide the information about group. If you provide the information of the group, you can use the method `HashMap<String,Operator> getOperatorMapByGroupPattern(File,String)` to get the operator map. 
-4. The fourth column after semicolon in my exsample is in form "in-stack priority, out-stack priority, operand count". `OperatorMapGenerator` doesn't interpret the content after a semicolon, so you can use a semicolon to lead the comments. That means you'd better not use a semicolon in the string format of you own operator if you will use `OperatorMapGenerator` as well, though our `Expression` supports all kinds of format of operators. 
+4. The fourth column after semicolon in my example is in form "in-stack priority, out-stack priority, operand count". `OperatorMapGenerator` doesn't interpret the content after a semicolon, so you can use a semicolon to lead the comments. That means you'd better not use a semicolon in the string format of you own operator if you will use `OperatorMapGenerator` as well, though our `Expression` supports all kinds of format of operators. 
 
 You can refer to `operators.lst` for a strict normative example of operator list. I'm sure that you have a look at this file helps you to deal with class `Expression` and class `OperatorMapGenerator` better. 
 
-## Customized Operator Suggetions
+## Customized Operator Suggestions
 
 1. You need to set the in-stack priority, out-stack priority, operand count and group mode for your operator. 
 2. For single binary operator obeying associative laws like "+" (plus), the in-stack and out-stack priorities may be equivalent. 
@@ -124,13 +124,13 @@ You can refer to `operators.lst` for a strict normative example of operator list
 7. For pseudo operator like "pi" to offer a science constant, you could set both its in-stack priority and out-stack priority to the greatest (like 15) and its operand count to 0. 
 
 
-For a more detailed documation of the API, please refer to `docs/index.html`. To get this documation, execute
+For a more detailed document of the API, please refer to `docs/index.html`. To get this document, execute
 
 ```
 make docs
 ```
 
-For a jar archieve, execute
+For a jar archive, execute
 
 ```
 make jar
