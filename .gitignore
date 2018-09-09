@@ -3,3 +3,6 @@ process.hlp
 *.class
 *.jar
 tags
+GTAGS
+GRTAGS
+GPATH

@@ -19,7 +19,7 @@ pi	xyz.davidchangx.algorithms.math.operator.Pi	basic	;15,15,0
 cos(	xyz.davidchangx.algorithms.math.operator.Cosine	trigonometric	;15,1,1
 sin(	xyz.davidchangx.algorithms.math.operator.Sine	trigonometric	;15,1,1
 tan(	xyz.davidchangx.algorithms.math.operator.Tangent	trigonometric	;15,1,1
-; Group "trigonometric contains trigonometric functions. 
+; Group "trigonometric" contains trigonometric functions. 
 
 arccos(	xyz.davidchangx.algorithms.math.operator.ArcCosine	inverse_trigonometric	;15,1,1
 arcsin(	xyz.davidchangx.algorithms.math.operator.ArcSine	inverse_trigonometric	;15,1,1

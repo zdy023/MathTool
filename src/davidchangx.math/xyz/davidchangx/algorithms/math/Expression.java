@@ -29,7 +29,7 @@ import java.io.IOException;
  *
  * This class implements {@link DoubleUnaryOperator}. 
  *
- * @version 6.0
+ * @version 6.1
  * @author David Chang
  */
 public class Expression extends Operator implements DoubleUnaryOperator
@@ -96,7 +96,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 		StringReader stream = new StringReader(infix);
 		ArrayDeque<Operator> stack = new ArrayDeque<>();
 		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),
-			wordPat = Pattern.compile("\\w").asPredicate();
+			wordPat = Pattern.compile("\\w|\\.").asPredicate();
 		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),
 			unknownPat = x::equals,
 			opPat = str->this.operatorMap.containsKey(str);
@@ -354,7 +354,7 @@ public class Expression extends Operator implements DoubleUnaryOperator
 	/**
 	 * Returns the suffix expression in format {@code ArrayList<ExpressionItem>}. 
 	 *
-	 * This method in versions that are earlier than 6.0 is dangerous for it simply returns the reference of the internal @{code ArrayList}. In the new version, this method will create a deep clone of the internal @{code ArrayList} and return it. 
+	 * This method in versions that are earlier than 6.0 is dangerous for it simply returns the reference of the internal {@code ArrayList}. In the new version, this method will create a deep clone of the internal {@code ArrayList} and return it. 
 	 *
 	 * @return the suffix expression in format {@code ArrayList<ExpressionItem>}
 	 */

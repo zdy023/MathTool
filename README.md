@@ -1,5 +1,7 @@
 # MathTool
 
+[TOC]
+
 ## Introduction
 
 This library provides a Java module containing several simple math APIs: `expression`, `equation`, `regression` and `plottor`. 
@@ -23,7 +25,7 @@ System.out.println(exp.getValue());
 
  Class `Expression` always tries to parse the longest substring from start of a string consisting of neighbouring punctuations as an operator. Sometimes several operators may confuse with each other, for example "|(" (`AbsoluteLeft`), "|" (`Or`), "(" (`LeftBracket`) may confuse. Remember to insert white space at proper position to avoid confusing and wrong parsing. 
 
- About the usage of `OperatorMapGenerator`, refer to [About `OperatorMapGenerator`]. 
+ About the usage of `OperatorMapGenerator`, refer to [About `OperatorMapGenerator`](#about-operatormapgenerator). 
 
 Also you can construct an `Expression` with unknown character, and use it as a math function. Our `Expression` class implements interface `DoubleUnaryOperator` so that you can use it as an instance of `DoubleUnaryOperator`. Here is an example: 
 
@@ -58,7 +60,7 @@ System.out.println(root);
 
 The `solve(double,double,DoubleUnaryOperator,double)` method requires two `double`s as the boundary of interval, a `DoubleUnaryOperator` as the model of a function and a `double` as the expected accuracy as parameters. 
 
-And also we provide a simple executable `SolveEquation` which solves zero point of a function using tool `SecantRoot`. This executable requires an argument pointing to the path of operator list. About operator list, please refer to [About `OperatorMapGenerator`]. 
+And also we provide a simple executable `SolveEquation` which solves zero point of a function using tool `SecantRoot`. This executable requires an argument pointing to the path of operator list. About operator list, please refer to [About `OperatorMapGenerator`](#about-operatormapgenerator). 
 
 ## API `regression`
 

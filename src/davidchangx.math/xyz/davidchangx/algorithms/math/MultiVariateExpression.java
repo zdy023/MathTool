@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * This class inherits {@link Operator} class so that a contributed {@code MultiVariateExpression} can be used as a new operator in another {@code MultiVariateExpression} or {@link Expression}. 
  *
- * @version 6.0
+ * @version 6.1
  * @since 3.0
  * @author David Chang
  */
@@ -89,7 +89,7 @@ public class MultiVariateExpression extends Operator
 		StringReader stream = new StringReader(infix);
 		ArrayDeque<Operator> stack = new ArrayDeque<>();
 		Predicate<String> deliPat = Pattern.compile("\\s").asPredicate(),
-			wordPat = Pattern.compile("\\w").asPredicate();
+			wordPat = Pattern.compile("\\w|\\.").asPredicate();
 		Predicate<String> numPat = Pattern.compile("-?\\d+(\\.\\d*)?|\\.\\d+").asPredicate(),
 			unknownPat = str->Arrays.stream(x).anyMatch(un->str.equals(un)),
 			opPat = str->this.operatorMap.containsKey(str);
@@ -301,7 +301,7 @@ public class MultiVariateExpression extends Operator
 	/**
 	 * Returns the suffix expression in format {@code ArrayList<ExpressionItem>}. 
 	 *
-	 * This method in versions that are earlier than 6.0 is dangerous for it simply returns the reference of the internal @{code ArrayList}. In the new version, this method will create a deep clone of the internal @{code ArrayList} and return it. 
+	 * This method in versions that are earlier than 6.0 is dangerous for it simply returns the reference of the internal {@code ArrayList}. In the new version, this method will create a deep clone of the internal {@code ArrayList} and return it. 
 	 *
 	 * @return the suffix expression in format {@code ArrayList<ExpressionItem>}
 	 */
