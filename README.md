@@ -1,7 +1,5 @@
 # MathTool
 
-[TOC]
-
 ## Introduction
 
 This library provides a Java module containing several simple math APIs: `expression`, `equation`, `regression` and `plottor`. 
